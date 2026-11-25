@@ -3,6 +3,7 @@
 會在 screenshots/ 產生截圖。
 """
 import http.server, threading, functools, os, sys, math, time, json
+from urllib.parse import unquote
 from playwright.sync_api import sync_playwright
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -41,8 +42,34 @@ def pad_center(page):
 UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Safari Line/13.20.0'
 MOBILE = dict(viewport={'width': 390, 'height': 844}, device_scale_factor=2, is_mobile=True, has_touch=True, user_agent=UA, locale='zh-TW')
 
+NAME_RECTS_JS = '''() => {
+  const r = (el) => { if (!el || el.hidden || !el.offsetWidth) return null; let x = 0, y = 0, e = el; while (e && e.id !== 'card') { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return { l: x, t: y, r: x + el.offsetWidth, b: y + el.offsetHeight, text: el.textContent }; };
+  const q = (s) => Array.from(document.querySelectorAll(s)).filter(e => !e.hidden && e.offsetWidth).map(r);
+  return { to: r(document.getElementById('toName')), from: r(document.getElementById('fromName')),
+    title: r(document.getElementById('xmasTitle')), sound: r(document.getElementById('sound')),
+    buttons: q('.card-foot .pill'), hints: [r(document.getElementById('tapHint')), r(document.getElementById('flipHint'))] };
+}'''
+
+def overlap(a, b, m=0):
+    return a['l'] < b['r'] + m and a['r'] + m > b['l'] and a['t'] < b['b'] + m and a['b'] + m > b['t']
+
+def names_check(pg, label, d):
+    """名字不得碰到標題、雪花（含跳躍最高點；翻轉只會變窄）、小木屋、喇叭、下方按鈕與提示，也不得超出畫面"""
+    n = pg.evaluate(NAME_RECTS_JS)
+    flake = {'l': d['cx'] - d['down'] * d['R'], 'r': d['cx'] + d['down'] * d['R'], 't': d['cy'] - d['up'] * d['R'], 'b': d['cy'] + d['down'] * d['R']}
+    cabin = {'l': d['cabinLeft'], 'r': d['W'], 't': d['cabinTop'], 'b': d['H']}
+    obstacles = [('title', n['title']), ('flake', flake), ('cabin', cabin), ('sound', n['sound'])] + [('button', b) for b in n['buttons']] + [('hint', h) for h in n['hints'] if h]
+    shown = [(k, n[k]) for k in ('to', 'from') if n[k]]
+    for k, b in shown:
+        bad = [name for name, o in obstacles if o and overlap(b, o)]
+        inside = b['l'] >= 0 and b['t'] >= 0 and b['r'] <= d['W'] and b['b'] <= d['H']
+        check(not bad and inside, '%s: name "%s" [%.0f,%.0f %.0fx%.0f] clear of %s%s' % (label, b['text'], b['l'], b['t'], b['r'] - b['l'], b['b'] - b['t'], 'title/flake/cabin/buttons/hints', (' — OVERLAPS ' + ','.join(bad)) if bad else ('' if inside else ' — OUTSIDE VIEWPORT')))
+    if len(shown) == 2:
+        check(not overlap(shown[0][1], shown[1][1]), '%s: the two names do not overlap each other' % label)
+    return n
+
 def layout_check(pg, label):
-    """雪花（含光暈與跳躍最高點）不得碰到標題；也不得壓到小木屋（水平重疊時）或地面"""
+    """雪花（含光暈與跳躍最高點）不得碰到標題；也不得壓到小木屋（水平重疊時）或地面；名字不得碰到任何東西"""
     d = pg.evaluate('window.__snowflake.Scene.debug()')
     tb = pg.evaluate("(() => { const r = document.getElementById('xmasTitle').getBoundingClientRect(); return r.bottom - 10 * 0; })()")
     # 標題 fade 動畫結束後 transform 為 none，用 offset 量測較準
@@ -55,7 +82,8 @@ def layout_check(pg, label):
     check(ok_title, '%s: flake peak top %.0f below title bottom %.0f' % (label, peak_top, max(tb, tb2)))
     check(bottom <= limit, '%s: flake bottom %.0f above %s %.0f' % (label, bottom, 'cabin top' if horiz_overlap else 'ground', limit))
     space_mid = (max(tb, tb2) + limit) / 2
-    print('       %s: viewport %dx%d  R=%.0f  center y=%.0f  (mid of free space %.0f)' % (label, d['W'], d['H'], d['R'], d['cy'], space_mid))
+    print('       %s: viewport %dx%d  R=%.0f  center y=%.0f  (mid of free space %.0f)  names: %s' % (label, d['W'], d['H'], d['R'], d['cy'], space_mid, (d.get('names') or {}).get('mode')))
+    names_check(pg, label, d)
     return d
 
 def peak_shot(pg, name):
@@ -76,7 +104,8 @@ with sync_playwright() as p:
     page.wait_for_timeout(900)
     check(page.locator('#designer').is_visible(), 'designer visible')
     check(page.locator('#card').is_hidden(), 'card hidden')
-    check(page.locator('#inTo').count() == 0 and page.locator('#inMsg').count() == 0 and page.locator('.chip').count() == 0, 'message form removed')
+    check(page.locator('#inMsg').count() == 0 and page.locator('.chip').count() == 0, 'message form removed')
+    check(page.input_value('#inTo') == '' and page.input_value('#inFrom') == '', 'optional 給 / 署名 fields start empty')
     check(page.locator('#greet').count() == 0, 'greeting panel removed')
 
     print('[2] 手繪引導：故意抖動、彎曲的筆畫 → 對齊成直線冰晶（每一筆 6 份旋轉，不鏡射）')
@@ -141,8 +170,10 @@ with sync_playwright() as p:
     check(info[4]['t'] == 'h', 'stroke across the arm tip → small hexagon tip')
     check(info[5]['t'] == 's' and info[5]['attach'] < 0.006 and abs(info[5]['angle'] - 60) < 1e-6, 'sub-branch starts on the branch at exactly 60°')
     check(page.evaluate('window.scrollY') == 0, 'page did not scroll while drawing')
+    page.fill('#inTo', '媽媽'); page.fill('#inFrom', '小明')
+    page.locator('#inFrom').blur()
     page.evaluate('window.scrollTo(0,0)'); page.wait_for_timeout(2600)
-    page.screenshot(path=os.path.join(SHOTS, 'designer.png'))
+    page.screenshot(path=os.path.join(SHOTS, 'designer.png'), full_page=True)
     hand_card = page.evaluate('''() => { const D = window.__snowflake.D; return window.__snowflake.Core.encode({ strokes: D.strokes, beautify: false }); }''')
     print('       guided hand-drawn flake (6 elements) hash length: %d' % (len(hand_card) + 3))
     touch_stroke(cdp, [(cx + R * 0.5, cy - R * 0.62), (cx + R * 0.51, cy - R * 0.62)])     # 空白處點一下 → 忽略
@@ -198,6 +229,7 @@ with sync_playwright() as p:
     print('[5] 預覽與返回')
     page.click('#btnPreview'); page.wait_for_timeout(2500)
     check(page.locator('#card').is_visible() and page.locator('#backEdit').is_visible() and page.locator('#makeOwn').is_hidden(), 'preview shows card + 返回編輯')
+    check(page.locator('#toName').is_visible() and '媽媽' in page.inner_text('#toName') and '小明' in page.inner_text('#fromName'), 'preview shows the names')
     page.click('#backEdit'); page.wait_for_timeout(300)
     check(page.locator('#designer').is_visible() and page.evaluate('window.__snowflake.D.strokes.length') == 6, 'back to designer, state kept')
 
@@ -207,7 +239,12 @@ with sync_playwright() as p:
     link = page.input_value('#linkOut')
     check('#c=' in link, 'link has #c=')
     print('       guided flake (6 elements, beautified) link hash length: %d' % (len(link.split('#', 1)[1]) + 1))
-    check(link.split('#c=')[1][:1] in 'QRST', 'new links use format v4')
+    check(link.split('#c=')[1][:1] in 'UVWX', 'links with names use format v5')
+    dec = page.evaluate('(h) => window.__snowflake.Core.decode(h)', link.split('#c=')[1])
+    check(dec['to'] == '媽媽' and dec['from'] == '小明', 'link carries 給 媽媽 / 署名 小明')
+    share = page.get_attribute('#btnLine', 'href')
+    from urllib.parse import unquote
+    check(unquote(share.split('text=')[1]).startswith('給 媽媽：我親手做了一片聖誕雪花送給你，點開看看！'), 'share text addresses the recipient')
     check(page.get_attribute('#btnLine', 'href').startswith('https://line.me/R/share?text='), 'LINE share href')
     page.click('#btnCopy'); page.wait_for_timeout(300)
     check(('已複製' in page.inner_text('#toast')) or ('手動複製' in page.inner_text('#toast')), 'copy gives feedback')
@@ -227,7 +264,12 @@ with sync_playwright() as p:
     pg.goto(link)
     pg.wait_for_timeout(600)
     check(pg.locator('#card').is_visible() and pg.locator('#designer').is_hidden(), 'card mode on link')
-    pg.wait_for_timeout(2600)
+    pg.wait_for_timeout(1000)
+    nm = pg.evaluate(NAME_RECTS_JS)
+    check(pg.evaluate("getComputedStyle(document.getElementById('toName')).opacity") == '0', 'names hidden during the opening animation')
+    pg.wait_for_timeout(3200)
+    check(pg.inner_text('#toName').replace(' ', '').replace('\n', '') == '給媽媽' and pg.inner_text('#fromName').replace(' ', '').replace('\n', '') == '—小明', 'card shows 給 媽媽 and — 小明')
+    check(pg.evaluate("getComputedStyle(document.getElementById('toName')).opacity") == '1', 'names faded in after opening')
     layout_check(pg, 'iPhone 390x844')
     pg.screenshot(path=os.path.join(SHOTS, 'card.png'))
     peak_shot(pg, 'card-peak.png')
@@ -271,7 +313,13 @@ with sync_playwright() as p:
         pg2.goto(BASE + '#c=' + f['hash']); pg2.wait_for_timeout(500)
         q = pg2.evaluate('window.__snowflake.Scene.debug().R')
         check(pg2.locator('#card').is_visible() and pg2.locator('#errorBox').is_hidden(), 'legacy v%d link %d opens as card' % (f['v'], i))
-        check('媽媽' not in pg2.inner_text('body'), 'legacy link %d shows no greeting text' % i)
+        body_txt = pg2.inner_text('body')
+        check('聖誕快樂' not in body_txt and '謝謝' not in body_txt, 'legacy link %d shows no greeting message' % i)
+        if f['v'] == 1:
+            exp = pg2.evaluate('(h) => window.__snowflake.Core.decode(h)', f['hash'])
+            check(pg2.locator('#toName').is_visible() == bool(exp['to']) and pg2.locator('#fromName').is_visible() == bool(exp['from']), 'legacy v1 link %d shows its names (%s / %s)' % (i, exp['to'], exp['from']))
+        else:
+            check(pg2.locator('#toName').is_hidden() and pg2.locator('#fromName').is_hidden(), 'legacy v%d link %d shows no names' % (f['v'], i))
     pg2.goto(BASE + '#c=' + LEGACY[-1]['hash']); pg2.wait_for_timeout(2800)
     pg2.screenshot(path=os.path.join(SHOTS, 'card-legacy.png'))
 
@@ -338,6 +386,192 @@ with sync_playwright() as p:
     check(page.locator('#sheet').is_visible(), 'works offline after load')
     ctx.set_offline(False)
     check(not errs, 'final: no console errors ' + json.dumps(errs, ensure_ascii=False))
+    for cc in (ctx, ctx2, c4, c5): cc.close()     # 關掉前面的頁面，讓之後的觸控時間更接近真實手機
+    print('[14] 名字：長度限制、注音選字中不截斷、空白不顯示、草稿保存、長名字排版')
+    c6 = browser.new_context(**MOBILE); p6 = c6.new_page(); e6 = []; watch(p6, e6)
+    p6.goto(BASE); p6.wait_for_timeout(500)
+    p6.click('#inTo'); p6.keyboard.type('一二三四五六七八九十甲乙丙丁')
+    check(p6.input_value('#inTo') == '一二三四五六七八九十甲乙', 'typing 14 chars keeps 12 (got %r)' % p6.input_value('#inTo'))
+    p6.fill('#inTo', ''); p6.click('#inTo')
+    cdp6 = c6.new_cdp_session(p6)
+    p6.keyboard.insert_text('一二三四五六七八九十甲')
+    # 模擬注音輸入：選字中（composition）的字不能被截掉
+    cdp6.send('Input.imeSetComposition', {'text': 'ㄋㄧˇㄏㄠˇ', 'selectionStart': 5, 'selectionEnd': 5})
+    p6.wait_for_timeout(100)
+    mid = p6.input_value('#inTo')
+    check(mid.startswith('一二三四五六七八九十甲') and len(mid) > 12, 'not cut during IME composition (value %r)' % mid)
+    cdp6.send('Input.insertText', {'text': '你好'})
+    p6.wait_for_timeout(100)
+    check(p6.input_value('#inTo') == '一二三四五六七八九十甲你', 'limited to 12 after compositionend (got %r)' % p6.input_value('#inTo'))
+    p6.fill('#inFrom', '  阿明  '); p6.locator('#inFrom').blur(); p6.wait_for_timeout(100)
+    check(p6.input_value('#inFrom') == '阿明', 'sender trimmed on blur')
+    check(p6.inner_text('#cntTo') == '12/12', 'counter shows 12/12')
+    p6.click('#btnRandom'); p6.wait_for_timeout(600)
+    p6.reload(); p6.wait_for_timeout(700)
+    check(p6.input_value('#inTo') == '一二三四五六七八九十甲你' and p6.input_value('#inFrom') == '阿明' and p6.evaluate('window.__snowflake.D.strokes.length') > 0, 'draft restores snowflake and names after reload')
+    p6.click('#btnMake'); p6.wait_for_timeout(200)
+    long_link = p6.input_value('#linkOut')
+    p6.click('#btnCloseSheet')
+    p6.fill('#inTo', ''); p6.fill('#inFrom', ''); p6.locator('#inFrom').blur()
+    p6.click('#btnMake'); p6.wait_for_timeout(200)
+    plain_link = p6.input_value('#linkOut')
+    check(plain_link.split('#c=')[1][:1] in 'QRST', 'empty names → link stays format v4')
+    check(not unquote(p6.get_attribute('#btnLine', 'href').split('text=')[1]).startswith('給'), 'share text without recipient is the default text')
+    p6.click('#btnCloseSheet')
+    p6.fill('#inTo', '媽媽'); p6.locator('#inTo').blur()
+    p6.click('#btnMake'); p6.wait_for_timeout(200)
+    to_only = p6.input_value('#linkOut'); p6.click('#btnCloseSheet')
+    print('       link hash lengths (same flake): no names %d, 給 媽媽 only %d, 12+12 chars %d' % tuple(len(x.split('#', 1)[1]) + 1 for x in (plain_link, to_only, long_link)))
+    print('       sample hash (guided flake with 媽媽/小明): %d' % (len(link.split('#', 1)[1]) + 1))
+    p6.goto(plain_link); p6.wait_for_timeout(3600)
+    check(p6.locator('#toName').is_hidden() and p6.locator('#fromName').is_hidden(), 'empty names → nothing shown on card')
+    p6.goto(BASE + '#c=x'); p6.goto(to_only); p6.wait_for_timeout(3600)
+    check(p6.locator('#toName').is_visible() and p6.locator('#fromName').is_hidden(), 'only 給 → only 給 shown')
+    layout_check(p6, 'only-to 390x844')
+    check(not e6, 'names: no console errors ' + json.dumps(e6, ensure_ascii=False))
+    c6.close()
+    for label, opts, name in [
+        ('long names 390x844', MOBILE, 'card-long'),
+        ('long names iPhone SE 375x667', dict(MOBILE, viewport={'width': 375, 'height': 667}), 'card-long-se'),
+        ('long names landscape 844x390', dict(MOBILE, viewport={'width': 844, 'height': 390}), 'card-long-landscape'),
+        ('long names desktop 1280x800', dict(viewport={'width': 1280, 'height': 800}, locale='zh-TW'), 'card-long-desktop'),
+        ('long names 360x640', dict(MOBILE, viewport={'width': 360, 'height': 640}), 'card-long-360'),
+    ]:
+        c3 = browser.new_context(**opts); p3 = c3.new_page(); e3 = []; watch(p3, e3)
+        p3.goto(long_link); p3.wait_for_timeout(4300)
+        layout_check(p3, label)
+        p3.screenshot(path=os.path.join(SHOTS, name + '.png'))
+        check(not e3, label + ': no console errors')
+        c3.close()
+
+    print('[15] 左右滑動雪花翻轉（Y 軸）、慣性、回正；雪花外滑動仍吹雪')
+    c7 = browser.new_context(**MOBILE); p7 = c7.new_page(); e7 = []; watch(p7, e7)
+    p7.goto(link); p7.wait_for_timeout(2600)
+    cdp7 = c7.new_cdp_session(p7)
+    d = p7.evaluate('window.__snowflake.Scene.debug()')
+    fx, fy = d['cx'], d['flakeCy']
+    check(abs(d['flipAngle']) < 1e-9, 'flake starts face-on')
+    tp = lambda p: [{'x': p[0], 'y': p[1], 'id': 1, 'radiusX': 4, 'radiusY': 4, 'force': 1}]
+    settle = lambda pg: pg.wait_for_function('!window.__snowflake.Scene.flipping()', timeout=8000)
+    # 先慢慢拖：角度跟著手指走
+    cdp7.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': tp((fx - 70, fy + 10))})
+    angles = []
+    for i in range(1, 13):
+        cdp7.send('Input.dispatchTouchEvent', {'type': 'touchMove', 'touchPoints': tp((fx - 70 + i * 10, fy + 10 + i * 0.6))}); time.sleep(0.016)
+        angles.append(p7.evaluate('window.__snowflake.Scene.debug().flipAngle'))
+    check(p7.evaluate("window.__snowflake.Music.state") == 'playing', 'first touch on the flake still starts the music')
+    time.sleep(0.15)
+    cdp7.send('Input.dispatchTouchEvent', {'type': 'touchEnd', 'touchPoints': []})
+    print('       angle while dragging slowly: %s' % ', '.join('%.0f°' % (a * 57.3) for a in angles[::2]))
+    check(angles[-1] > 0.6, 'horizontal drag on the flake rotates it around Y (%.0f°)' % (angles[-1] * 57.3))
+    check(all(b >= a - 1e-9 for a, b in zip(angles, angles[1:])), 'angle follows the finger monotonically')
+    settle(p7)
+    a1 = p7.evaluate('window.__snowflake.Scene.debug().flipAngle')
+    check(abs(math.sin(a1)) < 1e-6, 'held then released below 90° → eases back face-on (%.1f°)' % math.degrees(a1))
+    # 快速甩動：慣性
+    # （無頭瀏覽器每次觸控事件約隔一幀 ≈ 60ms，所以每步移動大一點，模擬手機上 ≈ 900px/s 的甩動）
+    cdp7.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': tp((fx - 120, fy))})
+    for i in range(1, 7):
+        cdp7.send('Input.dispatchTouchEvent', {'type': 'touchMove', 'touchPoints': tp((fx - 120 + i * 55, fy + i))}); time.sleep(0.008)
+    cdp7.send('Input.dispatchTouchEvent', {'type': 'touchEnd', 'touchPoints': []})
+    dd = p7.evaluate('window.__snowflake.Scene.debug()')
+    angles = [dd['flipAngle']]
+    print('       flick release: angle %.0f°, release velocity %.1f rad/s (touch end %.0fms after last move)' % (math.degrees(dd['flipAngle']), dd['flipReleaseVel'], dd['flipIdle'] * 1000))
+    check(dd['flipReleaseVel'] > 3.2, 'flick release carries momentum (%.1f rad/s, above the free-spin threshold)' % dd['flipReleaseVel'])
+    p7.wait_for_timeout(250)
+    a2 = p7.evaluate('window.__snowflake.Scene.debug().flipAngle')
+    check(a2 > angles[-1] + 0.2, 'keeps spinning after release (inertia): %.0f° → %.0f°' % (angles[-1] * 57.3, a2 * 57.3))
+    t0 = time.time(); settle(p7)
+    dd = p7.evaluate('window.__snowflake.Scene.debug()')
+    check(abs(math.sin(dd['flipAngle'])) < 1e-6 and dd['flipVel'] == 0, 'after the flick it settles face-on in %.1fs (angle %.1f°, %s)' % (time.time() - t0, math.degrees(dd['flipAngle']), 'front' if dd['flipAngle'] == 0 else 'back'))
+    # 慢慢拖到約 100° 停住放開 → 回到最近的 180°（背面＝鏡像）
+    cdp7.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': tp((fx - 80, fy))})
+    start_angle = dd['flipAngle']
+    target_px = (math.radians(100) - 0) * d['R'] * 0.9
+    steps = 20
+    for i in range(1, steps + 1):
+        cdp7.send('Input.dispatchTouchEvent', {'type': 'touchMove', 'touchPoints': tp((fx - 80 + target_px * i / steps, fy))}); time.sleep(0.02)
+    time.sleep(0.2)
+    cdp7.send('Input.dispatchTouchEvent', {'type': 'touchEnd', 'touchPoints': []})
+    settle(p7)
+    dd = p7.evaluate('window.__snowflake.Scene.debug()')
+    turned = (dd['flipAngle'] - start_angle) % (2 * math.pi)
+    check(abs(turned - math.pi) < 1e-3, 'slow drag past 90° then release → eases to the back face (turned %.1f°)' % math.degrees(turned))
+    # 垂直拖曳雪花 → 不翻轉（吹雪）；雪花外水平拖曳 → 吹雪
+    def blow_energy(): return p7.evaluate('window.__snowflake.Scene.debug().blowEnergy')
+    settle(p7)
+    before = p7.evaluate('window.__snowflake.Scene.debug().flipAngle')
+    touch_stroke(cdp7, [(fx + 5, fy - 60 + i * 12) for i in range(12)], 0.016)
+    check(p7.evaluate('window.__snowflake.Scene.debug().flipAngle') == before, 'vertical drag on the flake does not flip it')
+    p7.wait_for_timeout(1500)
+    check(blow_energy() < 1, 'snow calm before off-flake drag')
+    touch_stroke(cdp7, [(20 + i * 14, d['H'] * 0.86 + i * 0.5) for i in range(20)], 0.016)
+    be = blow_energy()
+    check(p7.evaluate('window.__snowflake.Scene.debug().flipAngle') == before and be > 1, 'horizontal drag off the flake blows snow (energy %.1f) and does not flip' % be)
+    # 翻轉途中的截圖
+    p7.evaluate('window.__snowflake.Scene.freezeFlip(1.05)'); p7.wait_for_timeout(200)
+    p7.screenshot(path=os.path.join(SHOTS, 'card-flip.png'))
+    p7.evaluate('window.__snowflake.Scene.freezeFlip(1.45)'); p7.wait_for_timeout(200)
+    p7.screenshot(path=os.path.join(SHOTS, 'card-flip-edge.png'))
+    p7.evaluate('window.__snowflake.Scene.freezeFlip(2.4)'); p7.wait_for_timeout(200)
+    p7.screenshot(path=os.path.join(SHOTS, 'card-flip-back.png'))
+    p7.evaluate('window.__snowflake.Scene.freezeFlip(null)')
+    check(not e7, 'flip: no console errors ' + json.dumps(e7, ensure_ascii=False))
+    c7.close()
+    # 翻轉提示：開場後出現、之後淡出，不碰到名字
+    c8 = browser.new_context(**MOBILE); p8 = c8.new_page(); e8 = []; watch(p8, e8)
+    p8.goto(link); p8.wait_for_timeout(2600)
+    check(p8.evaluate("getComputedStyle(document.getElementById('flipHint')).opacity") == '0', 'flip hint not shown before first touch / during opening')
+    p8.touchscreen.tap(60, 200); p8.wait_for_timeout(2400)
+    check(p8.evaluate("getComputedStyle(document.getElementById('flipHint')).opacity") == '1' and '左右滑動雪花可以翻轉' in p8.inner_text('#flipHint'), 'one-time flip hint appears after the tap hint')
+    names_check(p8, 'flip hint vs names', p8.evaluate('window.__snowflake.Scene.debug()'))
+    p8.screenshot(path=os.path.join(SHOTS, 'card-hint.png'))
+    p8.wait_for_timeout(5600)
+    check(p8.evaluate("getComputedStyle(document.getElementById('flipHint')).opacity") == '0', 'flip hint fades out')
+    # 桌面：滑鼠拖曳翻轉
+    c9 = browser.new_context(viewport={'width': 1280, 'height': 800}, locale='zh-TW'); p9 = c9.new_page(); e9 = []; watch(p9, e9)
+    p9.goto(link); p9.wait_for_timeout(2600)
+    d9 = p9.evaluate('window.__snowflake.Scene.debug()')
+    p9.mouse.move(d9['cx'] - 80, d9['flakeCy']); p9.mouse.down()
+    for i in range(1, 21): p9.mouse.move(d9['cx'] - 80 + i * 12, d9['flakeCy'] + 2); time.sleep(0.016)
+    a9 = p9.evaluate('window.__snowflake.Scene.debug().flipAngle')
+    p9.mouse.up()
+    check(a9 > 0.9, 'desktop mouse drag flips the flake (%.0f°)' % math.degrees(a9))
+    check(not e8 and not e9, 'hint/desktop flip: no console errors ' + json.dumps(e8 + e9, ensure_ascii=False))
+    c8.close(); c9.close()
+
+    print('[16] 捲動鎖定：在繪圖區作畫不捲動頁面，在繪圖區外滑動可以捲動')
+    c10 = browser.new_context(**MOBILE); p10 = c10.new_page(); e10 = []; watch(p10, e10)
+    p10.goto(BASE); p10.wait_for_timeout(500)
+    p10.add_style_tag(content='#designer{padding-bottom:900px!important}')
+    p10.evaluate('window.scrollTo(0, 60)'); p10.wait_for_timeout(200)
+    cdp10 = c10.new_cdp_session(p10)
+    y0 = p10.evaluate('window.scrollY')
+    cx10, cy10, R10 = pad_center(p10)
+    ys = []
+    tp1 = lambda p: [{'x': p[0], 'y': p[1], 'id': 1, 'radiusX': 4, 'radiusY': 4, 'force': 1}]
+    cdp10.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': tp1((cx10 + 3, cy10 + 3))})
+    for i in range(1, 25):
+        cdp10.send('Input.dispatchTouchEvent', {'type': 'touchMove', 'touchPoints': tp1((cx10 + 3, cy10 + 3 - i * 6))}); time.sleep(0.016)
+        ys.append(p10.evaluate('window.scrollY'))
+    cdp10.send('Input.dispatchTouchEvent', {'type': 'touchEnd', 'touchPoints': []})
+    p10.wait_for_timeout(300)
+    check(y0 > 0 and all(y == y0 for y in ys) and p10.evaluate('window.scrollY') == y0, 'vertical drawing on the pad keeps scrollY at %d (saw %s)' % (y0, sorted(set(ys))))
+    check(p10.evaluate('window.__snowflake.D.strokes.length') == 1, 'the drag drew an arm')
+    p10.evaluate('window.scrollTo(0, 60)'); p10.wait_for_timeout(150)
+    pb10 = p10.locator('#pad').bounding_box()
+    sy = 760
+    check(sy > pb10['y'] + pb10['height'] + 20, 'swipe start point is outside the pad')
+    cdp10.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': tp1((195, sy))})
+    for i in range(1, 25):
+        cdp10.send('Input.dispatchTouchEvent', {'type': 'touchMove', 'touchPoints': tp1((195, sy - i * 15))}); time.sleep(0.016)
+    cdp10.send('Input.dispatchTouchEvent', {'type': 'touchEnd', 'touchPoints': []})
+    p10.wait_for_timeout(400)
+    y2 = p10.evaluate('window.scrollY')
+    check(y2 > 60 + 100, 'swiping outside the pad scrolls the page (scrollY 60 → %d)' % y2)
+    check(not e10, 'scroll: no console errors ' + json.dumps(e10, ensure_ascii=False))
+    c10.close()
+
     print('SAMPLE_LINK_HASH ' + link.split('#', 1)[1])
     browser.close()
 

@@ -49,7 +49,16 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #9cc3
 .seg{display:inline-flex;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:999px;padding:3px}
 .seg button{border:0;background:transparent;color:#dfe8ff;padding:6px 18px;border-radius:999px;font-size:14px;min-height:36px}
 .seg button[aria-checked="true"]{background:#e9f1ff;color:#13244f;font-weight:700}
-.actions{display:grid;grid-template-columns:1fr 1.5fr;gap:10px;margin-top:20px}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 0}
+.nf{display:flex;align-items:center;gap:8px;min-height:46px;padding:0 6px 0 12px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid var(--line)}
+.nf:focus-within{border-color:rgba(255,226,160,.7);background:rgba(255,255,255,.11)}
+.nf label{flex:none;font-size:14px;color:var(--gold);letter-spacing:.06em}
+.nf input{flex:1;min-width:0;width:100%;border:0;background:transparent;color:#fff;font:inherit;font-size:16px;padding:10px 2px;outline:none}
+.nf input::placeholder{color:rgba(200,214,245,.55)}
+.nf .cnt{flex:none;font-size:11px;color:rgba(200,214,245,.6);min-width:2.6em;text-align:right;font-variant-numeric:tabular-nums}
+.nf .cnt.full{color:#ffd08a}
+.names-note{margin:6px 2px 0;font-size:12px;color:rgba(205,216,242,.8);text-align:center;text-shadow:0 1px 4px rgba(0,0,20,.9)}
+.actions{display:grid;grid-template-columns:1fr 1.5fr;gap:10px;margin-top:18px}
 .btn{display:flex;align-items:center;justify-content:center;gap:6px;min-height:50px;border-radius:14px;font:inherit;font-size:16px;font-weight:700;
   border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.1);color:#fff;text-decoration:none;padding:0 14px;text-align:center}
 .btn:active{transform:scale(.98)}
@@ -91,6 +100,16 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #9cc3
 #tapHint{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;text-align:center;font-size:13px;color:#eef3ff;padding:6px 14px;border-radius:999px;
   background:rgba(10,24,60,.62);bottom:calc(env(safe-area-inset-bottom,0px) + 64px);transition:opacity .8s}
 #tapHint.fade{transform:translate(-50%,10px)}#tapHint.fade.show{transform:translateX(-50%)}
+#flipHint{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;display:flex;align-items:center;gap:7px;font-size:13px;letter-spacing:.04em;color:rgba(236,243,255,.92);
+  padding:5px 14px;border-radius:999px;background:rgba(10,24,60,.42);bottom:calc(env(safe-area-inset-bottom,0px) + 66px);transition:opacity 1s}
+#flipHint svg{width:22px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#flipHint.fade{transform:translate(-50%,8px)}#flipHint.fade.show{transform:translateX(-50%)}
+.cname{position:absolute;left:0;top:0;margin:0;white-space:nowrap;line-height:1.25;padding:2px 4px;
+  font-family:"Songti TC","STSongti-TC-Regular","Noto Serif TC","Noto Serif CJK TC","Source Han Serif TC","PMingLiU","MingLiU",inherit;font-weight:400;
+  font-size:var(--nfs,20px);letter-spacing:.16em;color:#fff3da;
+  text-shadow:0 0 6px rgba(255,220,150,.75),0 0 18px rgba(255,190,100,.4),0 1px 3px rgba(0,0,30,.6)}
+.cname .lead{font-size:.8em;letter-spacing:.1em;color:#ffe2a0;margin-right:.35em;opacity:.9}
+.cname.fade{transition:opacity 1.6s ease,transform 1.6s ease}
 .card-foot{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;justify-content:center;gap:10px}
 .pill{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 16px;border-radius:999px;font-size:14px;color:#fff;text-decoration:none;
   background:rgba(12,26,66,.72);border:1px solid rgba(255,255,255,.3);box-shadow:0 4px 14px rgba(0,0,30,.35)}
@@ -134,6 +153,11 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #9cc3
       <button type="button" role="radio" aria-checked="false" data-w="2">粗</button>
     </div>
   </div>
+  <div class="names" role="group" aria-label="名字（選填）">
+    <div class="nf"><label for="inTo">給</label><input id="inTo" type="text" placeholder="收件人" autocomplete="off" enterkeyhint="next" spellcheck="false"><span class="cnt" id="cntTo" aria-hidden="true"></span></div>
+    <div class="nf"><label for="inFrom">署名</label><input id="inFrom" type="text" placeholder="你的名字" autocomplete="off" enterkeyhint="done" spellcheck="false"><span class="cnt" id="cntFrom" aria-hidden="true"></span></div>
+  </div>
+  <p class="names-note">名字可以不填，最多 12 個字，會小小地寫在卡片上</p>
   <div class="actions">
     <button class="btn" id="btnPreview" type="button">預覽卡片</button>
     <button class="btn primary" id="btnMake" type="button">產生連結・傳出去</button>
@@ -167,7 +191,10 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #9cc3
       <g class="note"><path d="M17 16.5V7.5l4-1v8.5"/><circle cx="15.8" cy="16.6" r="1.4" fill="currentColor"/><circle cx="19.8" cy="15.1" r="1.4" fill="currentColor"/></g>
     </svg>
   </button>
+  <p id="toName" class="cname fade" hidden><span class="lead">給</span><span class="nm"></span></p>
+  <p id="fromName" class="cname fade" hidden><span class="lead">—</span><span class="nm"></span></p>
   <div id="tapHint" class="fade">輕觸畫面播放音樂・用手指滑過畫面吹散雪花</div>
+  <div id="flipHint" class="fade" aria-hidden="true"><svg viewBox="0 0 22 14"><path d="M5 3L1.5 7 5 11M17 3l3.5 4L17 11M2 7h18"/></svg>左右滑動雪花可以翻轉</div>
   <div class="card-foot">
     <a id="makeOwn" class="pill hit" href="./">我也做一片送人</a>
     <button id="backEdit" class="pill strong hit" type="button" hidden>返回編輯</button>
@@ -228,7 +255,9 @@ const CONFIG = {
  *  - 鏡射筆畫 m=true：存在 30° 基本扇形內，畫成 12 份（6 個方向 × 鏡射）。隨機結晶與舊版 v1/v2 連結都是這種。
  *  - 旋轉筆畫 m=false：手繪筆畫，存在整個圓內，只畫成 6 份（純六角旋轉，不鏡射）。 */
 const Core = (function () {
-  const VERSION = 4;
+  const VERSION = 4;                               // 雪花本體的格式／繪製版本（沒有名字的連結仍是 v4）
+  const VERSION_TEXT = 5;                          // 有「給」或「署名」時使用 v5（= v4 雪花 + 名字）
+  const NAME_MAX = 12;                             // 「給」「署名」最多 12 個字（以 Unicode 字元計）
   const SEG = Math.PI / 3, HALF = Math.PI / 6, SQ3 = Math.sqrt(3);
   const QX = 255, QY = 127, YMAX = 0.5;           // 鏡射筆畫：扇形內 x∈[0,1] 8 bits、y∈[0,0.5] 7 bits
   const QR = 511;                                  // v3 旋轉筆畫：x,y∈[-1,1] 各 9 bits
@@ -786,6 +815,35 @@ const Core = (function () {
     return out;
   }
   function cpLen(s) { return Array.from(s).length; }
+  /* 名字整理：去掉控制字元與換行、空白合併、去頭尾空白，最多 NAME_MAX 個字 */
+  function cleanName(s) {
+    if (typeof s !== 'string') return '';
+    s = s.replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/g, ' ').replace(/\s+/g, ' ').trim();
+    return Array.from(s).slice(0, NAME_MAX).join('').trim();
+  }
+  const okCp = (c) => c >= 0x20 && !(c >= 0x7f && c <= 0x9f) && !(c >= 0xd800 && c <= 0xdfff) && c <= 0x10ffff && c !== 0x2028 && c !== 0x2029;
+  /* v5 名字：字數 4b（1~12），每個字：0+7b（ASCII）｜10+16b（BMP，含中文、注音）｜11+21b（其他，例如表情符號） */
+  function writeName(w, s) {
+    const cps = Array.from(s).map(ch => ch.codePointAt(0));
+    w.w(cps.length, 4);
+    for (const c of cps) {
+      if (c < 0x80) { w.w(0, 1); w.w(c, 7); }
+      else if (c < 0x10000) { w.w(2, 2); w.w(c, 16); }
+      else { w.w(3, 2); w.w(c, 21); }
+    }
+  }
+  function readName(r) {
+    const n = r.r(4);
+    if (n < 1 || n > NAME_MAX) throw new Error('name length');
+    let s = '';
+    for (let i = 0; i < n; i++) {
+      const c = !r.r(1) ? r.r(7) : !r.r(1) ? r.r(16) : r.r(21);
+      if (!okCp(c)) throw new Error('name char');
+      s += String.fromCodePoint(c);
+    }
+    if (s !== cleanName(s)) throw new Error('name form');
+    return s;
+  }
 
   /* v1/v2 筆畫：全部是鏡射筆畫，差分 5+5 bits */
   function readStrokesV12(r) {
@@ -810,12 +868,16 @@ const Core = (function () {
    *   類型 0（折線，結晶用）：鏡射 1b、點數-1 7b、首點、之後每點 1b 旗標 + 差分 6b+6b 或絕對座標（同 v3）
    *   類型 1（直線段）：起點 9b+9b、方向 4b（30° 的倍數）、長度 6b（1/64）
    *   類型 2（六角形）：中心 9b+9b、外接半徑 7b（1/128）、方向 4b
-   * ｜ 補齊位元組 ｜ CRC-8 */
+   * ｜ 補齊位元組 ｜ CRC-8
+   * v5（有名字時）：版本 4b ｜ 美化 1b ｜ 有「給」1b ｜ 有「署名」1b ｜ 保留 1b ｜ 元素（同 v4）｜「給」｜「署名」（格式見 writeName）
+   *   沒有名字時仍產生 v4，連結和以前一模一樣。 */
   function encode(card) {
     const strokes = (card.strokes || []).filter(s => s.t === 's' || s.t === 'h' || (s.q && s.q.length)).slice(0, MAX_STROKES);
     if (!strokes.length) throw new Error('no strokes');
+    const to = cleanName(card.to), from = cleanName(card.from);
     const w = new BitW();
-    w.w(VERSION, 4); w.w(card.beautify ? 1 : 0, 1); w.w(0, 3);
+    if (to || from) { w.w(VERSION_TEXT, 4); w.w(card.beautify ? 1 : 0, 1); w.w(to ? 1 : 0, 1); w.w(from ? 1 : 0, 1); w.w(0, 1); }
+    else { w.w(VERSION, 4); w.w(card.beautify ? 1 : 0, 1); w.w(0, 3); }
     w.w(strokes.length, 7);
     for (const s of strokes) {
       const wd = Math.max(0, Math.min(2, s.w | 0));
@@ -832,6 +894,8 @@ const Core = (function () {
         else { w.w(0, 1); w.w(q[i][0], bx); w.w(q[i][1], by); }
       }
     }
+    if (to) writeName(w, to);
+    if (from) writeName(w, from);
     w.align();
     const bytes = w.bytes;
     bytes.push(crc8(bytes));
@@ -888,7 +952,8 @@ const Core = (function () {
     }
     return strokes;
   }
-  /* 解碼：v4（目前）、v3（手繪自由線條）、v2（只有雪花）、v1（含文字；文字驗證後略過）。回傳的 v 決定繪製方式，舊連結畫面保持原樣。 */
+  /* 解碼：v5（v4 + 名字）、v4（目前）、v3（手繪自由線條）、v2（只有雪花）、v1（含收件人／祝福語／寄件人；顯示收件人與寄件人，祝福語略過）。
+   * 回傳的 v 決定繪製方式，舊連結的雪花畫面保持原樣。 */
   function decode(str) {
     if (typeof str !== 'string' || !str || str.length > 4000) throw new Error('empty');
     const all = unb64url(str);
@@ -897,8 +962,17 @@ const Core = (function () {
     if (crc8(body) !== all[all.length - 1]) throw new Error('checksum');
     const r = new BitR(body);
     const ver = r.r(4);
-    let beautify, strokes;
-    if (ver >= 2 && ver <= 4) {
+    let beautify, strokes, to = '', from = '';
+    if (ver === 5) {
+      beautify = r.r(1);
+      const hasTo = r.r(1), hasFrom = r.r(1);
+      if (r.r(1)) throw new Error('reserved');
+      if (!hasTo && !hasFrom) throw new Error('no names');
+      strokes = readStrokesV4(r);
+      if (hasTo) to = readName(r);
+      if (hasFrom) from = readName(r);
+      r.align();
+    } else if (ver >= 2 && ver <= 4) {
       beautify = r.r(1);
       if (r.r(3)) throw new Error('reserved');
       strokes = ver === 4 ? readStrokesV4(r) : ver === 3 ? readStrokesV3(r) : readStrokesV12(r);
@@ -910,17 +984,18 @@ const Core = (function () {
       strokes = readStrokesV12(r);
       r.align();
       const getStr = () => { const len = r.byte(); const b = new Uint8Array(len); for (let i = 0; i < len; i++) b[i] = r.byte(); return td.decode(b); };
-      const to = getStr();
+      to = getStr();
       let msg;
       if (isPreset) { msg = LEGACY_PRESETS[r.byte()]; if (msg === undefined) throw new Error('preset'); } else msg = getStr();
-      const from = hasFrom ? getStr() : '';
+      from = hasFrom ? getStr() : '';
       if (cpLen(to) > LEGACY_LIMITS.to || cpLen(msg) > LEGACY_LIMITS.msg || cpLen(from) > LEGACY_LIMITS.from) throw new Error('limits');
+      to = cleanName(to); from = cleanName(from);
     } else throw new Error('version');
     if (r.pos !== body.length * 8) throw new Error('trailing');
-    return { v: ver, strokes, beautify: !!beautify };
+    return { v: ver, strokes, beautify: !!beautify, to, from };
   }
 
-  return { VERSION, WIDTHS, WIDTHS_LEGACY, MAX_STROKES, MAX_PTS_STROKE, SEG, HALF, CRYSTAL_TYPES,
+  return { VERSION, VERSION_TEXT, NAME_MAX, cleanName, cpLen, WIDTHS, WIDTHS_LEGACY, MAX_STROKES, MAX_PTS_STROKE, SEG, HALF, CRYSTAL_TYPES,
     fold, quant, dequant, rdp, smooth, makeStroke, fitStrokes, toFloat, decorate, polyLen, clipWedge,
     interpret, expandSegs, elemLine, MIN_LEN,
     randomFlake, mulberry32, encode, decode, crc8 };
@@ -996,18 +1071,87 @@ const Scene = (function () {
     L.sw = Math.max(110, Math.min(250, M * 0.4));
     flakeLayout();
   }
-  /* 雪花放在「標題下緣」與「小木屋／地面」之間，並保證跳躍最高點與光暈都不碰到標題 */
-  function flakeLayout() {
-    const tb = Scene.titleBottom ? Scene.titleBottom(W, H) : H * 0.1;
-    const A = tb + 8;
+  /* 雪花放在「標題下緣」與「小木屋／地面」之間，並保證跳躍最高點與光暈都不碰到標題。
+   * 有名字時：寬螢幕先試著把「給」放在雪花左上、「署名」放在右下；放不下就上下排（給在雪花上方、署名在下方），
+   * 必要時縮小雪花。名字不得碰到標題、雪花（含跳躍最高點；翻轉時寬度只會變窄）、小木屋、月亮、下方按鈕與提示。 */
+  function fitFlake(tb, padTop, padBottom) {
+    const A = tb + 8 + padTop;
     const fit = (B) => Math.max(40, Math.min((B - A) / (FLAKE_UP + FLAKE_DOWN), W * 0.42, 270));
-    let B = L.groundY - L.maxAcc - 12;
+    let B = L.groundY - L.maxAcc - 12 - padBottom;
     let R = fit(B);
-    if (W / 2 + R * FLAKE_DOWN > L.cabinX - L.cw * 0.12) { B = L.cabinTop - 10; R = fit(B); }
+    if (W / 2 + R * FLAKE_DOWN > L.cabinX - L.cw * 0.12) { B = Math.min(B, L.cabinTop - 10 - padBottom); R = fit(B); }
     let cy = (A + B) / 2;
     cy = Math.max(cy, A + FLAKE_UP * R);
     cy = Math.min(cy, B - FLAKE_DOWN * R);
-    L.cx = W / 2; L.cy = cy; L.R = R; L.titleBottom = tb; L.flakeTop = cy - FLAKE_UP * R; L.flakeBottom = cy + FLAKE_DOWN * R;
+    return { cx: W / 2, cy, R, A, B };
+  }
+  function flakeLayout() {
+    const tb = Scene.titleBottom ? Scene.titleBottom(W, H) : H * 0.1;
+    const ns = Scene.nameSizes ? Scene.nameSizes(W, H) : null;
+    let f = fitFlake(tb, 0, 0), names = null;
+    if (ns && (ns.to || ns.from)) {
+      const obst = (g) => {
+        const o = [[0, 0, W, tb + 2], [W - 62, 0, W, ns.soundBottom + 6], [L.cabinX - L.cw * 0.12 - 6, L.cabinTop - 8, W, H], [0, ns.bottomLimit, W, H],
+          [L.moon.x - L.moon.r * 1.5, L.moon.y - L.moon.r * 1.5, L.moon.x + L.moon.r * 1.5, L.moon.y + L.moon.r * 1.5]];
+        if (g) o.push([g.cx - g.R * FLAKE_DOWN - 6, g.cy - g.R * FLAKE_UP - 4, g.cx + g.R * FLAKE_DOWN + 6, g.cy + g.R * FLAKE_DOWN + 4]);
+        return o;
+      };
+      let avoidSleigh = true;
+      const sleighHit = (b) => {                // 雪橇飛過的斜帶（每 20 秒經過一次）：盡量避開
+        const k = L.sw / 200, half = 49 * k + 11, y0 = L.moon.y + (L.moon.x - b.x) * 0.12 - 3, y1 = L.moon.y + (L.moon.x - b.x - b.w) * 0.12 - 3;
+        return b.y < Math.max(y0, y1) + half && b.y + b.h > Math.min(y0, y1) - half;
+      };
+      const hit = (b, list) => b.x < 6 || b.y < 0 || b.x + b.w > W - 6 || b.y + b.h > H || list.some(o => b.x < o[2] && b.x + b.w > o[0] && b.y < o[3] && b.y + b.h > o[1]) || (avoidSleigh && sleighHit(b));
+      const box = (n, x, y, sc) => ({ x, y, w: n.w * sc, h: n.h * sc, sc });
+      const clampX = (x, w) => Math.max(8, Math.min(W - 8 - w, x));
+      // 1) 寬螢幕：「給」在雪花左側、「署名」在右側
+      const trySide = (sc) => {
+        const ob = obst(f), side = f.R * FLAKE_DOWN + 16;
+        let to = null, from = null;
+        if (ns.to) { to = [-0.5, -0.3, -0.7, -0.1, 0.1].map(k => box(ns.to, f.cx - side - ns.to.w * sc, f.cy + f.R * k - ns.to.h * sc / 2, sc)).find(b => !hit(b, ob)); if (!to) return null; }
+        if (ns.from) { from = [0.45, 0.2, 0.65, 0, -0.2].map(k => box(ns.from, f.cx + side, f.cy + f.R * k - ns.from.h * sc / 2, sc)).find(b => !hit(b, ob)); if (!from) return null; }
+        return { to, from, mode: 'side', g: f };
+      };
+      // 2) 上下排：像信一樣，「給」在雪花左上（或標題正下方）、「署名」在右下；必要時縮小雪花
+      const tryStack = (sc) => {
+        const th = ns.to ? ns.to.h * sc + 4 : 0, fh = ns.from ? ns.from.h * sc + 4 : 0;
+        if ((ns.to && ns.to.w * sc > W - 16) || (ns.from && ns.from.w * sc > W - 16)) return null;
+        for (let extra = 0; extra <= 40; extra += 8) {
+          const g = fitFlake(tb, th, fh + extra), ob = obst(g);
+          let to = null, from = null;
+          if (ns.to) {
+            const tw = ns.to.w * sc;
+            to = [box(ns.to, clampX(g.cx - g.R * 0.62, tw), Math.max(tb + 4, g.cy - g.R * FLAKE_UP - 4 - ns.to.h * sc), sc),
+              box(ns.to, clampX(g.cx - tw / 2, tw), tb + 4, sc)].find(b => !hit(b, ob));
+            if (!to) continue;
+          }
+          if (ns.from) {
+            const y = g.cy + g.R * FLAKE_DOWN + 4, w = ns.from.w * sc;
+            from = [g.cx + g.R * 0.62 - w, g.cx - w / 2, g.cx - g.R * 0.35 - w / 2, 8, L.cabinX - L.cw * 0.12 - 14 - w].map(x => box(ns.from, clampX(x, w), y, sc)).find(b => !hit(b, ob));
+            if (!from) continue;
+          }
+          return { to, from, mode: 'stack', g };
+        }
+        return null;
+      };
+      outer: for (const tryMode of W > H * 1.15 ? [trySide, tryStack] : [tryStack]) {
+        for (const sc of [1, 0.88, 0.76, 0.66]) {
+          for (const avoid of [true, false]) {
+            avoidSleigh = avoid;
+            const r = tryMode(sc);
+            if (r) { names = { to: r.to, from: r.from, mode: r.mode }; f = r.g; break outer; }
+          }
+        }
+      }
+      if (!names) {                              // 極端情況（非常矮的視窗）：只能把名字縮到最小放上方
+        const g = fitFlake(tb, 0, 0);
+        names = { to: ns.to ? box(ns.to, 8, tb + 2, 0.6) : null, from: ns.from ? box(ns.from, W - 8 - ns.from.w * 0.6, tb + 2 + (ns.to ? ns.to.h * 0.6 : 0), 0.6) : null, mode: 'fallback' };
+        f = g;
+      }
+    }
+    L.cx = f.cx; L.cy = f.cy; L.R = f.R; L.titleBottom = tb; L.flakeTop = f.cy - FLAKE_UP * f.R; L.flakeBottom = f.cy + FLAKE_DOWN * f.R;
+    L.names = names;
+    if (Scene.onLayout) Scene.onLayout(L);
   }
 
   /* ---------- 工具 ---------- */
@@ -1606,34 +1750,132 @@ const Scene = (function () {
     else { const v = e - J1; rot = Math.PI * 2 + v * 0.13; if (v < 0.5) sc = 1 - 0.05 * Math.sin(Math.PI * v / 0.5) * (1 - v); }
     return { y, rot, sc, alpha };
   }
+  /* ---------- 左右滑動翻轉（繞螢幕垂直軸 Y 旋轉）：慣性＋摩擦，最後輕輕回到正面或背面（0° / 180°） ---------- */
+  const flip = { th: 0, w: 0, drag: false, lastX: 0, lastT: 0, tgt: null, frozen: null, moved: 0 };
+  const FLIP_FREE = 3.2, FLIP_FRICTION = 1.3, FLIP_K = 22, FLIP_C = 8.6, FLIP_PERSP = 6;
+  function flakeCenterY() {
+    const f = cardFlake; if (!f) return L.cy;
+    const e = freezeE != null ? freezeE : performance.now() / 1000 - f.start;
+    return L.cy + (e > 0 ? flakeState(e).y : 0);
+  }
+  function hitFlake(x, y) { return mode === 'card' && !!cardFlake && Math.hypot(x - L.cx, y - flakeCenterY()) < L.R * 1.02; }
+  function flipStart(x) { flip.drag = true; flip.lastX = x; flip.lastT = performance.now(); flip.w = 0; flip.tgt = null; flip.moved = 0; }
+  function flipMove(x) {
+    if (!flip.drag) return;
+    const now = performance.now(), dx = x - flip.lastX, dt = Math.max(1, now - flip.lastT) / 1000;
+    const d = dx / (L.R * 0.9);
+    flip.th += d; flip.moved += Math.abs(d);
+    const v = Math.max(-26, Math.min(26, d / dt));
+    flip.w = dt > 0.1 ? v : flip.w * 0.55 + v * 0.45;
+    flip.lastX = x; flip.lastT = now;
+  }
+  function flipEnd() {
+    if (!flip.drag) return;
+    flip.drag = false;
+    const idle = (performance.now() - flip.lastT) / 1000;          // 停住一下才放開 → 慣性逐漸消失
+    if (idle > 0.06) flip.w *= Math.exp(-(idle - 0.06) / 0.1);
+    flip.idle = idle;
+    flip.rel = flip.w;
+  }
+  function stepFlip(dt) {
+    if (flip.drag) return;
+    if (flip.tgt === null && Math.abs(flip.w) > FLIP_FREE) { flip.w *= Math.exp(-FLIP_FRICTION * dt); flip.th += flip.w * dt; return; }
+    if (flip.tgt === null) {                                        // 進入回正階段：選「照目前速度會停下來的地方」最近的正面／背面
+      if (Math.abs(flip.w) < 1e-4 && Math.abs(flip.th - Math.round(flip.th / Math.PI) * Math.PI) < 1e-4) { normFlip(); return; }
+      flip.tgt = Math.round((flip.th + flip.w / FLIP_C) / Math.PI) * Math.PI;
+    }
+    const n = Math.max(1, Math.ceil(dt / 0.008)), h = dt / n;       // 小步積分，低幀率也穩定
+    for (let i = 0; i < n; i++) { flip.w += (-FLIP_K * (flip.th - flip.tgt) - FLIP_C * flip.w) * h; flip.th += flip.w * h; }
+    if (Math.abs(flip.th - flip.tgt) < 0.002 && Math.abs(flip.w) < 0.03) { flip.th = flip.tgt; flip.w = 0; flip.tgt = null; normFlip(); }
+  }
+  function normFlip() { const k = Math.round(flip.th / Math.PI); flip.th = ((k % 2) + 2) % 2 ? Math.PI : 0; }
+
+  let rotCv = null;
   function drawCardFlake(t) {
     const f = cardFlake; if (!f || !f.sprite) return;
     const e = freezeE != null ? freezeE : t - f.start, R = f.R;
     if (e < 0) return;
     const st = flakeState(e);
     const cx = L.cx, cy = L.cy + st.y, S = f.size;
+    const th = flip.frozen != null ? flip.frozen : flip.th, c = Math.cos(th), sn = Math.sin(th), ac = Math.abs(c), sg = c < 0 ? -1 : 1;
+    const edge = 1 - ac;                                              // 0 = 正面，1 = 側面（最亮）
     ctx.save();
     ctx.globalAlpha = st.alpha;
     const pulse = 0.5 + 0.5 * Math.sin(t * 1.5);
-    const hal = ctx.createRadialGradient(cx, cy, R * 0.1, cx, cy, R * 1.2);
-    hal.addColorStop(0, 'rgba(150,200,255,' + (0.18 + 0.08 * pulse) + ')'); hal.addColorStop(1, 'rgba(150,200,255,0)');
-    ctx.fillStyle = hal; ctx.fillRect(cx - R * 1.2, cy - R * 1.2, R * 2.4, R * 2.4);
+    ctx.save(); ctx.translate(cx, cy); ctx.scale(0.4 + 0.6 * ac, 1);
+    const hal = ctx.createRadialGradient(0, 0, R * 0.1, 0, 0, R * 1.2);
+    hal.addColorStop(0, 'rgba(150,200,255,' + (0.18 + 0.08 * pulse + 0.1 * edge) + ')'); hal.addColorStop(1, 'rgba(150,200,255,0)');
+    ctx.fillStyle = hal; ctx.fillRect(-R * 1.2, -R * 1.2, R * 2.4, R * 2.4);
+    ctx.restore();
     if (e > J1 && e < J1 + 1) {
       const v = e - J1;
       ctx.strokeStyle = 'rgba(200,230,255,' + (0.5 * (1 - v)) + ')'; ctx.lineWidth = 2 + 4 * (1 - v);
       ctx.beginPath(); ctx.arc(cx, cy, R * (0.95 + 0.25 * v), 0, Math.PI * 2); ctx.stroke();
     }
-    ctx.translate(cx, cy); ctx.rotate(st.rot); ctx.scale(st.sc, st.sc);
-    ctx.globalAlpha = st.alpha * (0.55 + 0.4 * pulse);
-    ctx.drawImage(f.glow, -S / 2, -S / 2, S, S);
-    ctx.globalAlpha = st.alpha;
-    ctx.drawImage(f.sprite, -S / 2, -S / 2, S, S);
+    const glowA = 0.55 + 0.4 * pulse;
+    if (Math.abs(sn) < 0.003) {
+      // 正面（或背面＝鏡像）：直接畫
+      ctx.translate(cx, cy); ctx.scale(sg, 1); ctx.rotate(st.rot); ctx.scale(st.sc, st.sc);
+      ctx.globalAlpha = st.alpha * glowA;
+      ctx.drawImage(f.glow, -S / 2, -S / 2, S, S);
+      ctx.globalAlpha = st.alpha;
+      ctx.drawImage(f.sprite, -S / 2, -S / 2, S, S);
+      if (e > J1 * 0.7) {
+        ctx.globalCompositeOperation = 'lighter';
+        const gs = R * 0.13;
+        for (const p of f.tips) {
+          const a = Math.sin(t * p.sp + p.ph);
+          if (a > 0.55) { const k = (a - 0.55) / 0.45; ctx.globalAlpha = k * st.alpha; const z = gs * (0.5 + k * 0.7); ctx.drawImage(glintCv, p.x - z / 2, p.y - z / 2, z, z); }
+        }
+      }
+      ctx.restore();
+      return;
+    }
+    // 翻轉中：先把（平面旋轉後的）雪花畫到離屏，再切成直條，水平縮放 cos θ ＋ 輕微透視（遠的一側較矮）
+    const px = f.glow.width;
+    if (!rotCv || rotCv.width !== px) rotCv = mk(px, px);
+    const rc = rotCv.getContext('2d');
+    rc.setTransform(1, 0, 0, 1, 0, 0); rc.clearRect(0, 0, px, px);
+    rc.setTransform(1, 0, 0, 1, px / 2, px / 2); rc.rotate(st.rot); rc.scale(st.sc, st.sc);
+    rc.globalAlpha = glowA; rc.drawImage(f.glow, -px / 2, -px / 2);
+    rc.globalAlpha = 1; rc.drawImage(f.sprite, -px / 2, -px / 2);
+    const kp = 1 - Math.abs(sn) / FLIP_PERSP;
+    const pf = (x) => kp / (1 + x * sn / (FLIP_PERSP * R));          // 透視係數（≤ 1，所以永遠不會比正面大）
+    const N = 40, E = new Array(N + 1);
+    for (let i = 0; i <= N; i++) { const x = -S / 2 + i * S / N; E[i] = Math.round(x * ac * pf(x) * dpr) / dpr; }
+    ctx.setTransform(sg * dpr, 0, 0, dpr, Math.round(cx * dpr), cy * dpr);
+    const strips = () => {
+      for (let i = 0; i < N; i++) {
+        const w = E[i + 1] - E[i]; if (w <= 0) continue;
+        const fm = pf(-S / 2 + (i + 0.5) * S / N);
+        ctx.drawImage(rotCv, i * px / N, 0, px / N, px, E[i], -S / 2 * fm, w, S * fm);
+      }
+    };
+    ctx.globalAlpha = st.alpha * (1 - 0.25 * edge);
+    strips();
+    ctx.globalCompositeOperation = 'lighter';
+    if (edge > 0.05) { ctx.globalAlpha = st.alpha * 0.6 * edge * edge; strips(); }
+    // 冰晶側面的反光：側面時最亮的一道細光＋星芒
+    const cl = Math.pow(edge, 4);
+    if (cl > 0.02) {
+      const hh = R * 0.98 * pf(0), lg = ctx.createLinearGradient(0, -hh, 0, hh);
+      lg.addColorStop(0, 'rgba(210,235,255,0)'); lg.addColorStop(0.5, 'rgba(240,248,255,' + (0.9 * cl) + ')'); lg.addColorStop(1, 'rgba(210,235,255,0)');
+      ctx.globalAlpha = st.alpha; ctx.fillStyle = lg; ctx.fillRect(-0.8 - 1.6 * cl, -hh, 1.6 + 3.2 * cl, hh * 2);
+      const fy = -R * 0.18, fw = R * 0.55 * cl, hg = ctx.createLinearGradient(-fw, 0, fw, 0);    // 橫向星芒
+      hg.addColorStop(0, 'rgba(220,240,255,0)'); hg.addColorStop(0.5, 'rgba(255,255,255,' + cl + ')'); hg.addColorStop(1, 'rgba(220,240,255,0)');
+      ctx.fillStyle = hg; ctx.fillRect(-fw, fy - 0.6 - cl, fw * 2, 1.2 + 2 * cl);
+      const z = R * (0.16 + 0.22 * cl);
+      ctx.globalAlpha = st.alpha * cl; ctx.drawImage(glintCv, -z / 2, fy - z / 2, z, z);
+    }
+    // 臂尖閃光跟著投影
     if (e > J1 * 0.7) {
-      ctx.globalCompositeOperation = 'lighter';
-      const gs = R * 0.13;
+      const gs = R * 0.13, cr = Math.cos(st.rot) * st.sc, sr2 = Math.sin(st.rot) * st.sc;
       for (const p of f.tips) {
         const a = Math.sin(t * p.sp + p.ph);
-        if (a > 0.55) { const k = (a - 0.55) / 0.45; ctx.globalAlpha = k * st.alpha; const z = gs * (0.5 + k * 0.7); ctx.drawImage(glintCv, p.x - z / 2, p.y - z / 2, z, z); }
+        if (a <= 0.55) continue;
+        const k = (a - 0.55) / 0.45, x = p.x * cr - p.y * sr2, y = p.x * sr2 + p.y * cr, q = pf(x);
+        ctx.globalAlpha = k * st.alpha * (0.6 + 0.4 * ac); const z = gs * (0.5 + k * 0.7);
+        ctx.drawImage(glintCv, x * ac * q - z / 2, y * q - z / 2, z, z);
       }
     }
     ctx.restore();
@@ -1717,7 +1959,7 @@ const Scene = (function () {
       ctx.drawImage(dotCv, p.x - z / 2, p.y - z / 2, z, z);
     }
     ctx.globalAlpha = 1;
-    if (mode === 'card') drawCardFlake(t);
+    if (mode === 'card') { stepFlip(dt); drawCardFlake(t); }
     else { ctx.fillStyle = 'rgba(3,8,26,0.5)'; ctx.fillRect(0, 0, W, H); }
     frameTimes.push(performance.now() - t0); if (frameTimes.length > 120) frameTimes.shift();
   }
@@ -1782,7 +2024,7 @@ const Scene = (function () {
     document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
     start();
   }
-  function setMode(m) { mode = m; if (m === 'card') { sceneStart = performance.now() / 1000; dust = []; } }
+  function setMode(m) { mode = m; flip.drag = false; flip.th = 0; flip.w = 0; flip.tgt = null; if (m === 'card') { sceneStart = performance.now() / 1000; dust = []; } }
   function debug() {
     const G = sleighGeom();
     const ft = frameTimes.slice().sort((a, b) => a - b);
@@ -1790,9 +2032,11 @@ const Scene = (function () {
       groundY: L.groundY, cabinTop: L.cabinTop, cabinLeft: L.cabinX - L.cw * 0.12, moon: L.moon,
       sleighMoonAt: G.first + G.pm * G.DUR, sinceCard: performance.now() / 1000 - sceneStart,
       flakeStart: cardFlake ? cardFlake.start : null, now: performance.now() / 1000,
-      frameMedian: ft[ft.length >> 1], frameP95: ft[Math.floor(ft.length * 0.95)] };
+      frameMedian: ft[ft.length >> 1], frameP95: ft[Math.floor(ft.length * 0.95)],
+      flipAngle: flip.th, flipVel: flip.w, flipReleaseVel: flip.rel || 0, flipIdle: flip.idle || 0, flipDrag: flip.drag, flipMoved: flip.moved, flakeCy: flakeCenterY(), names: L.names, blowEnergy: snow.reduce((n, p) => n + Math.abs(p.bx) + Math.abs(p.by), 0) };
   }
-  return { init, setMode, setCard, blow, layout: L, relayout, titleBottom: null, debug, freezeFlake: (e) => { freezeE = e; }, sleighSheet: () => sleighFrames.map(f => f.toDataURL()), isRunning: () => running };
+  return { init, setMode, setCard, blow, layout: L, relayout, titleBottom: null, nameSizes: null, onLayout: null, debug, freezeFlake: (e) => { freezeE = e; },
+    hitFlake, flipStart, flipMove, flipEnd, freezeFlip: (a) => { flip.frozen = a; }, flipping: () => flip.drag || flip.w !== 0 || flip.tgt !== null, sleighSheet: () => sleighFrames.map(f => f.toDataURL()), isRunning: () => running };
 })();
 
 /* =====================================================================
@@ -1924,6 +2168,7 @@ const Music = (function () {
   let toastT = 0;
   function toast(msg, ms) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('show'), ms || 2600); }
   const SHARE_TEXT = '我親手做了一片聖誕雪花送給你，點開看看！';
+  const shareText = (to) => to ? '給 ' + to + '：' + SHARE_TEXT : SHARE_TEXT;
 
   function baseUrl() { return location.href.split('#')[0].split('?')[0]; }
   function readParams() {
@@ -1940,6 +2185,33 @@ const Music = (function () {
     if (!$('card').hidden && el.offsetHeight) return el.offsetTop + el.offsetHeight;
     const fs = Math.max(30, Math.min(62, W * 0.096, H * 0.11));
     return H * 0.016 + fs * 1.25 + 2;
+  };
+
+  /* 卡片上的名字：量實際大小交給 Scene 排版，排好後放到指定位置 */
+  const nameEls = { to: $('toName'), from: $('fromName') };
+  const nameFs = (W, H) => Math.max(15, Math.min(22, W * 0.046, H * 0.042));
+  Scene.nameSizes = (W, H) => {
+    if ($('card').hidden) return null;
+    const out = {}, fs = nameFs(W, H);
+    for (const k of ['to', 'from']) {
+      const el = nameEls[k];
+      if (el.hidden) { out[k] = null; continue; }
+      el.style.setProperty('--nfs', fs + 'px');
+      out[k] = { w: el.offsetWidth, h: el.offsetHeight };
+    }
+    const foot = document.querySelector('.card-foot'), hints = [$('tapHint'), $('flipHint'), foot].map(e => e.offsetTop).filter(v => v > 0);
+    out.bottomLimit = Math.min(H - 40, ...hints) - 6;
+    out.soundBottom = soundBtn.offsetTop + soundBtn.offsetHeight;
+    return out;
+  };
+  Scene.onLayout = (L) => {
+    const fs = nameFs(window.innerWidth, window.innerHeight);
+    for (const k of ['to', 'from']) {
+      const el = nameEls[k], b = L.names && L.names[k];
+      if (!b) continue;
+      el.style.setProperty('--nfs', (fs * b.sc) + 'px');
+      el.style.left = b.x + 'px'; el.style.top = b.y + 'px';
+    }
   };
 
   /* ---------------- 卡片模式 ---------------- */
@@ -1963,17 +2235,39 @@ const Music = (function () {
     $('makeOwn').href = baseUrl();
     $('makeOwn').hidden = preview;
     $('backEdit').hidden = !preview;
+    const to = Core.cleanName(card.to), from = Core.cleanName(card.from);
+    nameEls.to.querySelector('.nm').textContent = to; nameEls.to.hidden = !to;
+    nameEls.from.querySelector('.nm').textContent = from; nameEls.from.hidden = !from;
+    $('card').setAttribute('aria-label', '聖誕雪花賀卡' + (to ? '，給' + to : '') + (from ? '，' + from + '送' : '') + '：夜空中一片旋轉發光的雪花');
     Scene.relayout();
     Scene.setCard(card);
     Scene.setMode('card');
     textTimers.forEach(clearTimeout); textTimers = [];
-    ['xmasTitle', 'tapHint'].forEach(id => $(id).classList.remove('show'));
+    ['xmasTitle', 'tapHint', 'flipHint', 'toName', 'fromName'].forEach(id => $(id).classList.remove('show'));
+    flipHintDone = false; flipped = false;
     textTimers.push(setTimeout(() => $('xmasTitle').classList.add('show'), 400));
-    textTimers.push(setTimeout(() => { if (Music.state === 'idle') $('tapHint').classList.add('show'); }, 2200));
-    clearTimeout(hintT); hintT = setTimeout(() => $('tapHint').classList.remove('show'), 11000);
+    textTimers.push(setTimeout(() => nameEls.to.classList.add('show'), 1900));        // 開場跳躍（約 1.6 秒）結束後才淡入
+    textTimers.push(setTimeout(() => nameEls.from.classList.add('show'), 2500));
+    textTimers.push(setTimeout(() => { if (Music.state === 'idle') $('tapHint').classList.add('show'); else showFlipHint(900); }, 2200));
+    clearTimeout(hintT); hintT = setTimeout(hideTapHint, 11000);
+  }
+  /* 一次性的翻轉提示：和「輕觸播放音樂」在同一個位置，等它消失後才出現，幾秒後淡出 */
+  let flipHintDone = false, flipped = false, flipHintT = 0;
+  function hideTapHint() { const was = $('tapHint').classList.contains('show'); $('tapHint').classList.remove('show'); showFlipHint(was ? 1100 : 600); }
+  function showFlipHint(delay) {
+    if (flipHintDone || flipped || !cardActive) return;
+    try { if (localStorage.getItem('snowflake-card-flipped')) return; } catch (e) { /* ignore */ }
+    flipHintDone = true;
+    clearTimeout(flipHintT);
+    flipHintT = setTimeout(() => {
+      if (flipped || !cardActive) return;
+      $('flipHint').classList.add('show');
+      flipHintT = setTimeout(() => $('flipHint').classList.remove('show'), 4200);
+    }, delay);
   }
   function leaveCard() {
-    cardActive = false;
+    cardActive = false; flipPtr = null;
+    clearTimeout(flipHintT); $('flipHint').classList.remove('show');
     Music.stop();
     $('card').hidden = true;
     body.classList.remove('mode-card'); body.classList.add('mode-designer');
@@ -1985,7 +2279,7 @@ const Music = (function () {
     if (!cardActive) return;
     if (Music.state === 'idle') {
       if (Music.start() && ev.target && ev.target.closest && ev.target.closest('#sound')) skipToggleOnce = true;
-      $('tapHint').classList.remove('show');
+      if ($('tapHint').classList.contains('show')) hideTapHint();
     } else if (Music.state === 'playing') {
       Music.unlock();                          // iOS 可能要 touchend 才真正解鎖
     }
@@ -1999,15 +2293,36 @@ const Music = (function () {
   });
   document.addEventListener('visibilitychange', () => Music.onHidden(document.hidden));
 
-  // 滑動吹雪
+  // 滑動吹雪；從雪花上開始、主要是水平方向的拖曳 → 翻轉雪花（滑鼠拖曳也可以）
   const ptr = {};
+  let flipPtr = null;                          // { id, x0, y0, state: 'maybe' | 'flip' }
+  window.addEventListener('pointerdown', (e) => {
+    if (!cardActive || flipPtr || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    if (e.target && e.target.closest && e.target.closest('.hit')) return;
+    if (Scene.hitFlake(e.clientX, e.clientY)) flipPtr = { id: e.pointerId, x0: e.clientX, y0: e.clientY, state: 'maybe' };
+  }, true);
   window.addEventListener('pointermove', (e) => {
     if (!cardActive) return;
     const last = ptr[e.pointerId];
-    if (last) Scene.blow(e.clientX, e.clientY, e.clientX - last.x, e.clientY - last.y);
     ptr[e.pointerId] = { x: e.clientX, y: e.clientY };
+    if (flipPtr && flipPtr.id === e.pointerId) {
+      if (flipPtr.state === 'maybe') {
+        const dx = e.clientX - flipPtr.x0, dy = e.clientY - flipPtr.y0;
+        if (Math.hypot(dx, dy) < 7) return;                       // 還不確定方向：先不吹雪
+        if (Math.abs(dx) > Math.abs(dy) * 1.15) {
+          flipPtr.state = 'flip'; Scene.flipStart(flipPtr.x0); flipped = true;
+          clearTimeout(flipHintT); $('flipHint').classList.remove('show');
+          try { localStorage.setItem('snowflake-card-flipped', '1'); } catch (err) { /* ignore */ }
+        } else flipPtr = null;
+      }
+      if (flipPtr && flipPtr.state === 'flip') { Scene.flipMove(e.clientX); return; }
+    }
+    if (last) Scene.blow(e.clientX, e.clientY, e.clientX - last.x, e.clientY - last.y);
   }, { passive: true });
-  const clearPtr = (e) => { delete ptr[e.pointerId]; };
+  const clearPtr = (e) => {
+    delete ptr[e.pointerId];
+    if (flipPtr && flipPtr.id === e.pointerId) { if (flipPtr.state === 'flip') Scene.flipEnd(); flipPtr = null; }
+  };
   window.addEventListener('pointerup', clearPtr); window.addEventListener('pointercancel', clearPtr);
   if (!window.PointerEvent) {
     let lt = null;
@@ -2028,7 +2343,7 @@ const Music = (function () {
   }
 
   /* ---------------- 設計模式 ---------------- */
-  const D = { strokes: [], beautify: false, width: 1, history: [] };
+  const D = { strokes: [], beautify: false, width: 1, history: [], to: '', from: '' };
   const pad = $('pad'), pctx = pad.getContext('2d');
   let padSize = 0, padDpr = 1, PR = 0, committed = null, live = null, liveSm = null, activeId = null, padRect = null, drawQueued = false;
   let liveLines = null, liveElem = null, ghost = null;      // 手繪引導：目前的既有線條、對齊後的預覽、淡出中的筆跡
@@ -2202,7 +2517,39 @@ const Music = (function () {
     for (const x of $('thick').querySelectorAll('button')) x.setAttribute('aria-checked', x === b ? 'true' : 'false');
   });
 
-  function currentCard() { return { strokes: D.strokes.map(s => s.t ? { t: s.t, w: s.w, x: s.x, y: s.y, d: s.d, l: s.l, r: s.r } : { w: s.w, m: s.m, q: s.q }), beautify: D.beautify }; }
+  function currentCard() { return { strokes: D.strokes.map(s => s.t ? { t: s.t, w: s.w, x: s.x, y: s.y, d: s.d, l: s.l, r: s.r } : { w: s.w, m: s.m, q: s.q }), beautify: D.beautify, to: Core.cleanName(D.to), from: Core.cleanName(D.from) }; }
+
+  /* 「給」「署名」：最多 12 字。注音／拼音輸入選字中（composition）不截斷，選完字或離開欄位時才限制 */
+  const nameInputs = [['inTo', 'cntTo', 'to'], ['inFrom', 'cntFrom', 'from']];
+  function limitName(inp, final) {
+    const v = inp.value, cps = Array.from(v);
+    let nv = cps.length > Core.NAME_MAX ? cps.slice(0, Core.NAME_MAX).join('') : v;
+    nv = nv.replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/g, '');
+    if (final) nv = Core.cleanName(nv);
+    if (nv !== v) {
+      inp.value = nv;
+      if (cps.length > Core.NAME_MAX) toast('最多 ' + Core.NAME_MAX + ' 個字', 1400);
+      try { inp.setSelectionRange(nv.length, nv.length); } catch (e) { /* ignore */ }
+    }
+  }
+  function syncNames() {
+    for (const [id, cid, key] of nameInputs) {
+      const inp = $(id), n = Core.cpLen(inp.value), c = $(cid);
+      D[key] = inp.value;
+      c.textContent = n ? Math.min(n, 99) + '/' + Core.NAME_MAX : '';
+      c.classList.toggle('full', n >= Core.NAME_MAX);
+    }
+  }
+  for (const [id] of nameInputs) {
+    const inp = $(id);
+    let composing = false;
+    inp.addEventListener('compositionstart', () => { composing = true; });
+    inp.addEventListener('compositionend', () => { composing = false; limitName(inp, false); syncNames(); saveDraft(); });
+    inp.addEventListener('input', (e) => { if (!composing && !e.isComposing) limitName(inp, false); syncNames(); saveDraft(); });
+    inp.addEventListener('blur', () => { composing = false; limitName(inp, true); syncNames(); saveDraft(); });
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) { e.preventDefault(); if (id === 'inTo') $('inFrom').focus(); else inp.blur(); } });
+  }
+  function namesToInputs() { $('inTo').value = D.to || ''; $('inFrom').value = D.from || ''; syncNames(); }
   function validate() {
     if (!D.strokes.length) { toast('請先畫一片雪花，或按「隨機生成」'); pad.scrollIntoView({ behavior: 'smooth', block: 'center' }); return null; }
     return currentCard();
@@ -2216,7 +2563,7 @@ const Music = (function () {
     showCard(card, true);
   });
 
-  let currentLink = '';
+  let currentLink = '', currentShareText = SHARE_TEXT;
   $('btnMake').addEventListener('click', async () => {
     const c = validate(); if (!c) return;
     let payload;
@@ -2233,13 +2580,14 @@ const Music = (function () {
     currentLink = link;
     $('linkOut').value = link;
     $('linkMeta').textContent = '連結長度 ' + link.length + ' 字元（資料部分 ' + (link.length - baseUrl().length) + ' 字元）';
-    $('btnLine').href = 'https://line.me/R/share?text=' + encodeURIComponent(SHARE_TEXT + '\n' + link);
+    currentShareText = shareText(c.to);
+    $('btnLine').href = 'https://line.me/R/share?text=' + encodeURIComponent(currentShareText + '\n' + link);
     $('btnShare').hidden = !navigator.share;
     $('sheet').hidden = false;
     setTimeout(() => (navigator.share ? $('btnShare') : $('btnCopy')).focus(), 50);
   });
   $('btnShare').addEventListener('click', async () => {
-    try { await navigator.share({ title: '送你一片聖誕雪花', text: SHARE_TEXT, url: currentLink }); }
+    try { await navigator.share({ title: '送你一片聖誕雪花', text: currentShareText, url: currentLink }); }
     catch (e) { if (e && e.name !== 'AbortError') toast('無法開啟分享，請改用「複製連結」'); }
   });
   $('btnCopy').addEventListener('click', async () => {
@@ -2270,17 +2618,21 @@ const Music = (function () {
   function saveDraft() {
     clearTimeout(saveT);
     saveT = setTimeout(() => {
-      if (!D.strokes.length) { try { localStorage.removeItem(CONFIG.draftKey); } catch (e) { /* ignore */ } return; }
-      try { localStorage.setItem(CONFIG.draftKey, JSON.stringify({ v: Core.VERSION, c: Core.encode(currentCard()) })); } catch (e) { /* 無痕或 in-app 可能禁止 */ }
+      const to = Core.cleanName(D.to), from = Core.cleanName(D.from);
+      if (!D.strokes.length && !to && !from) { try { localStorage.removeItem(CONFIG.draftKey); } catch (e) { /* ignore */ } return; }
+      try { localStorage.setItem(CONFIG.draftKey, JSON.stringify({ v: Core.VERSION, c: D.strokes.length ? Core.encode(currentCard()) : null, to, from })); } catch (e) { /* 無痕或 in-app 可能禁止 */ }
     }, 300);
   }
   function loadDraft() {
     try {
       const o = JSON.parse(localStorage.getItem(CONFIG.draftKey) || 'null');
-      if (!o || o.v !== Core.VERSION || !o.c) return;
+      if (!o || o.v !== Core.VERSION) return;
+      D.to = Core.cleanName(o.to); D.from = Core.cleanName(o.from);
+      if (!o.c) return;
       const d = Core.decode(o.c);
       D.strokes = d.strokes.map(s => s.t ? s : Object.assign(s, { exact: true, dense: s.q.map(q => Core.dequant(q, s.m)) }));
       D.beautify = d.beautify;
+      if (!o.to && !o.from) { D.to = d.to; D.from = d.from; }
     } catch (e) { /* ignore */ }
   }
 
@@ -2292,6 +2644,7 @@ const Music = (function () {
     if (!designerReady) {
       designerReady = true;
       loadDraft();
+      namesToInputs();
       let rt = 0;
       window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(padResize, 120); });
     }

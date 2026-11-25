@@ -273,14 +273,41 @@ test('worst case: 63 long strokes still encodes, budget holds', () => {
   console.log('      worst-case    #c= length', hashLen(enc));
 });
 
-test('new links contain no text fields; extra card properties are ignored', () => {
+test('links without names stay v4 and byte-identical; empty/blank names are ignored', () => {
   const s = Core.randomFlake(Core.mulberry32(1));
   const a = Core.encode({ strokes: s, beautify: true });
-  const b = Core.encode({ strokes: s, beautify: true, to: '媽媽', msg: '聖誕快樂', from: '小明' });
+  const b = Core.encode({ strokes: s, beautify: true, to: '', from: '   ', msg: '聖誕快樂' });
   assert.strictEqual(a, b);
   const d = Core.decode(a);
-  assert.deepStrictEqual(Object.keys(d).sort(), ['beautify', 'strokes', 'v']);
-  assert.strictEqual(d.v, 4);
+  assert.deepStrictEqual(Object.keys(d).sort(), ['beautify', 'from', 'strokes', 'to', 'v']);
+  assert.strictEqual(d.v, 4); assert.strictEqual(d.to, ''); assert.strictEqual(d.from, '');
+});
+
+test('v5: to/from round trip (Chinese, Zhuyin, ASCII, emoji), only-to, only-from; strokes unchanged', () => {
+  const strokes = Core.randomFlake(Core.mulberry32(9));
+  const base = Core.encode({ strokes, beautify: false });
+  const cases = [['媽媽', '小明'], ['親愛的小美', ''], ['', '阿明'], ['ㄅㄆㄇ', 'Tom & Amy'], ['外婆🎄', '😀x'], ['一二三四五六七八九十一二', 'abcdefghijkl']];
+  for (const [to, from] of cases) {
+    const enc = Core.encode({ strokes, beautify: true, to, from });
+    assert(!/[^A-Za-z0-9_-]/.test(enc));
+    const d = Core.decode(enc);
+    assert.strictEqual(d.v, 5); assert.strictEqual(d.to, to); assert.strictEqual(d.from, from); assert.strictEqual(d.beautify, true);
+    assert.deepStrictEqual(d.strokes.map(x => x.q), Core.decode(base).strokes.map(x => x.q));
+    const g5 = Core.decorate(Core.toFloat(d.strokes, d.v), true, d.v), g4 = Core.decorate(Core.toFloat(d.strokes, 4), true, 4);
+    assert.deepStrictEqual(g5, g4, 'v5 renders exactly like v4');
+  }
+  const h = Core.encode({ strokes, to: '媽媽', from: '小明' }).length - base.length;
+  console.log('      names 媽媽／小明 add ' + h + ' chars; 12+12 Chinese chars add ' + (Core.encode({ strokes, to: '一'.repeat(12), from: '二'.repeat(12) }).length - base.length));
+});
+
+test('v5: names are cleaned and limited to 12 characters', () => {
+  const strokes = Core.randomFlake(Core.mulberry32(10));
+  const d = Core.decode(Core.encode({ strokes, to: '  親愛的\n媽媽\t ', from: '一二三四五六七八九十一二三四' }));
+  assert.strictEqual(d.to, '親愛的 媽媽');
+  assert.strictEqual(d.from, '一二三四五六七八九十一二');
+  assert.strictEqual(Core.cpLen(d.from), Core.NAME_MAX);
+  assert.strictEqual(Core.cleanName('😀'.repeat(20)), '😀'.repeat(12));
+  assert.strictEqual(Core.cleanName(null), '');
 });
 
 test('legacy v1, v2 and v3 links decode and render exactly as before', () => {
@@ -289,6 +316,7 @@ test('legacy v1, v2 and v3 links decode and render exactly as before', () => {
     const d = Core.decode(f.hash);
     assert.strictEqual(d.v, f.v);
     assert.strictEqual(d.beautify, f.beautify);
+    if (f.v > 1) assert(d.to === '' && d.from === '', 'v2/v3 have no names');
     assert.deepStrictEqual(d.strokes.map(s => ({ w: s.w, q: s.q })), f.strokes.map(s => ({ w: s.w, q: s.q })));
     if (f.v < 3) assert(d.strokes.every(s => s.m === true), 'v1/v2 strokes are mirrored');
     const g = Core.decorate(Core.toFloat(d.strokes, d.v), d.beautify, d.v);
@@ -300,8 +328,15 @@ test('legacy v1, v2 and v3 links decode and render exactly as before', () => {
     });
     assert.strictEqual(g.tips.length, f.geo.tips.length);
     g.tips.forEach((t, i) => { const o = f.geo.tips[i], op = o.p || o; assert(close(t.p[0], op[0]) && close(t.p[1], op[1])); });
-    console.log('      legacy v' + f.v + ' ' + String(f.hash.length + 3).padStart(3) + ' chars: identical geometry (' + g.lines.length + ' lines)  ->  re-encoded v3 ' + (Core.encode(d).length + 3) + ' chars');
+    console.log('      legacy v' + f.v + ' ' + String(f.hash.length + 3).padStart(3) + ' chars: identical geometry (' + g.lines.length + ' lines)  ->  re-encoded now ' + (Core.encode(d).length + 3) + ' chars');
   }
+});
+
+test('legacy v1 links expose their recipient / sender names (message is not shown)', () => {
+  const names = legacy.map(f => { const d = Core.decode(f.hash); return [d.to, d.from]; });
+  console.log('      v1 names: ' + JSON.stringify(names));
+  assert(names.some(([t]) => t === '媽媽'));
+  for (const [t, f] of names) assert(Core.cpLen(t) <= 12 && Core.cpLen(f) <= 12);
 });
 
 test('encode rejects empty snowflake', () => {
@@ -310,7 +345,7 @@ test('encode rejects empty snowflake', () => {
 
 test('corrupt / truncated / garbage inputs throw (never return junk)', () => {
   const rand = Core.mulberry32(5);
-  const goods = [Core.encode(cardOf(Core.randomFlake(rand), rand)), legacy[1].hash, legacy2[4].hash, legacy3[0].hash, Core.encode({ strokes: [{ t: 's', w: 1, x: 255, y: 255, d: 0, l: 50 }, { t: 's', w: 0, x: 350, y: 255, d: 2, l: 20 }, { t: 'h', w: 0, x: 255, y: 255, r: 40, d: 1 }] }), (() => { const h = Core.makeStroke(Array.from({ length: 30 }, (_, i) => [Math.cos(i / 5) * 0.6, Math.sin(i / 5) * 0.6]), 1); Core.fitStrokes([h], 220); return Core.encode({ strokes: [h] }); })()];
+  const goods = [Core.encode(cardOf(Core.randomFlake(rand), rand)), legacy[1].hash, legacy2[4].hash, legacy3[0].hash, Core.encode({ strokes: Core.randomFlake(Core.mulberry32(77)), to: '親愛的媽媽', from: '小明' }), Core.encode({ strokes: [{ t: 's', w: 1, x: 255, y: 255, d: 0, l: 50 }, { t: 's', w: 0, x: 350, y: 255, d: 2, l: 20 }, { t: 'h', w: 0, x: 255, y: 255, r: 40, d: 1 }] }), (() => { const h = Core.makeStroke(Array.from({ length: 30 }, (_, i) => [Math.cos(i / 5) * 0.6, Math.sin(i / 5) * 0.6]), 1); Core.fitStrokes([h], 220); return Core.encode({ strokes: [h] }); })()];
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
   const bad = ['', 'abc', '!!!!', 'A'.repeat(5000), '%E5%A5%BD'];
   for (const good of goods) {
