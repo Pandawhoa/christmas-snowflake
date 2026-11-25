@@ -1,0 +1,2306 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050d26">
+<meta name="format-detection" content="telephone=no">
+<title>聖誕雪花賀卡</title>
+<meta name="description" content="親手畫一片六角雪花，做成聖誕賀卡傳給親朋好友。">
+<meta property="og:title" content="送你一片聖誕雪花">
+<meta property="og:description" content="打開看看，這是我親手做的雪花賀卡。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230e2257'/%3E%3Cg stroke='%23fff' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M32 8v48M11 20l42 24M11 44l42-24'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+:root{--text:#f3f6ff;--muted:#b9c6e8;--line:rgba(255,255,255,.18);--gold:#ffe2a0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:#050d26;color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Heiti TC","Noto Sans TC","Noto Sans CJK TC","Microsoft JhengHei",sans-serif;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overscroll-behavior-y:none}
+body.mode-card{overflow:hidden;position:fixed;left:0;top:0;width:100%;height:100%;touch-action:none}
+[hidden]{display:none!important}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #9cc3ff;outline-offset:2px}
+#scene{position:fixed;left:0;top:0;width:100%;height:100%;display:block;z-index:0}
+
+/* ---------- 設計模式 ---------- */
+#designer{position:relative;z-index:1;max-width:520px;margin:0 auto;
+  padding:calc(env(safe-area-inset-top,0px) + 14px) 16px calc(env(safe-area-inset-bottom,0px) + 32px)}
+.d-title{font-size:clamp(21px,6vw,27px);font-weight:700;letter-spacing:.14em;text-align:center;margin:4px 0 4px;
+  color:#fff;text-shadow:0 0 14px rgba(150,200,255,.55)}
+.d-title small{display:block;font-family:"Snell Roundhand","Apple Chancery","Segoe Script","Brush Script MT","Dancing Script",cursive;
+  font-size:.62em;font-weight:400;letter-spacing:.04em;color:var(--gold);margin-bottom:2px}
+.d-sub{margin:0;text-align:center;color:var(--muted);font-size:14px;line-height:1.6}
+.pad-wrap{position:relative;width:100%;max-width:440px;margin:10px auto 6px}
+.pad-wrap::before{content:"";display:block;padding-top:100%}
+#pad{position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair;border-radius:50%}
+.pad-hint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;color:rgba(225,236,255,.85);
+  font-size:15px;text-align:center;line-height:1.7;transition:opacity .4s;text-shadow:0 1px 6px rgba(0,0,30,.8);width:70%}
+.pad-hint b{display:block;font-size:17px;color:#fff}
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.tbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 2px;min-height:60px;border-radius:14px;
+  background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.17);color:#eef3ff;font-size:13.5px;line-height:1.2}
+.tbtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tbtn:active{transform:scale(.97)}
+.tbtn[aria-pressed="true"]{background:rgba(255,217,138,.2);border-color:rgba(255,217,138,.65);color:#ffe7b3}
+.tbtn:disabled{opacity:.38;cursor:default}
+.tbtn.accent{background:rgba(120,170,255,.18);border-color:rgba(150,190,255,.5)}
+.row-thick{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 2px;font-size:14px;color:var(--muted)}
+.seg{display:inline-flex;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;color:#dfe8ff;padding:6px 18px;border-radius:999px;font-size:14px;min-height:36px}
+.seg button[aria-checked="true"]{background:#e9f1ff;color:#13244f;font-weight:700}
+.actions{display:grid;grid-template-columns:1fr 1.5fr;gap:10px;margin-top:20px}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;min-height:50px;border-radius:14px;font:inherit;font-size:16px;font-weight:700;
+  border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.1);color:#fff;text-decoration:none;padding:0 14px;text-align:center}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:linear-gradient(180deg,#e9604f,#c3362e);border-color:#f2948a;box-shadow:0 6px 18px rgba(200,50,40,.35)}
+.btn.line{background:#06c755;border-color:#3ee08a}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted);font-weight:400;min-height:44px}
+.foot{margin:18px 0 0;text-align:center;font-size:12px;color:rgba(200,212,240,.85);line-height:1.6;text-shadow:0 1px 4px rgba(0,0,20,.9)}
+
+/* ---------- 分享面板 ---------- */
+.sheet{position:fixed;left:0;top:0;width:100%;height:100%;z-index:20;background:rgba(2,6,20,.6);display:flex;align-items:flex-end;justify-content:center}
+.sheet-card{width:100%;max-width:520px;background:#12224f;border:1px solid var(--line);border-bottom:0;border-radius:22px 22px 0 0;
+  padding:20px 18px calc(env(safe-area-inset-bottom,0px) + 14px);box-shadow:0 -10px 40px rgba(0,0,0,.45);animation:up .28s ease}
+@keyframes up{from{transform:translateY(40px);opacity:.3}to{transform:none;opacity:1}}
+.sheet-card h2{margin:0 0 4px;font-size:19px;text-align:center}
+.sheet-sub{margin:0 0 12px;text-align:center;color:var(--muted);font-size:14px}
+#linkOut{width:100%;font:inherit;font-size:13px;color:#dfe9ff;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px;
+  -webkit-user-select:text;user-select:text}
+.meta{margin:6px 2px 12px;font-size:12px;color:var(--muted)}
+.sheet-btns{display:grid;gap:10px}
+
+/* ---------- 卡片模式 ---------- */
+#card{position:fixed;left:0;top:0;width:100%;height:100%;z-index:1;pointer-events:none}
+#card .hit{pointer-events:auto}
+.xmas{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 1.6vh);margin:0;padding:0 56px;text-align:center;
+  font-family:"Snell Roundhand","Apple Chancery","Segoe Script","Brush Script MT","Dancing Script",cursive;font-weight:400;
+  font-size:clamp(30px,min(9.6vw,11vh),62px);color:#fff4d6;letter-spacing:.02em;line-height:1.25;
+  text-shadow:0 0 10px rgba(255,214,140,.75),0 0 28px rgba(255,190,90,.35)}
+.fade{opacity:0;transform:translateY(10px);transition:opacity 1.3s ease,transform 1.3s ease}
+.fade.show{opacity:1;transform:none}
+#sound{position:absolute;top:calc(env(safe-area-inset-top,0px) + 10px);right:10px;width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.28);background:rgba(10,24,60,.55);color:#fff;display:flex;align-items:center;justify-content:center;padding:0}
+#sound svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#sound .waves,#sound .cross,#sound .note{display:none}
+#sound.playing .waves{display:inline}
+#sound.muted .cross{display:inline}
+#sound.idle .note{display:inline}
+#sound.idle{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,226,160,.5)}50%{box-shadow:0 0 0 8px rgba(255,226,160,0)}}
+#tapHint{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;text-align:center;font-size:13px;color:#eef3ff;padding:6px 14px;border-radius:999px;
+  background:rgba(10,24,60,.62);bottom:calc(env(safe-area-inset-bottom,0px) + 64px);transition:opacity .8s}
+#tapHint.fade{transform:translate(-50%,10px)}#tapHint.fade.show{transform:translateX(-50%)}
+.card-foot{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;justify-content:center;gap:10px}
+.pill{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 16px;border-radius:999px;font-size:14px;color:#fff;text-decoration:none;
+  background:rgba(12,26,66,.72);border:1px solid rgba(255,255,255,.3);box-shadow:0 4px 14px rgba(0,0,30,.35)}
+.pill.strong{background:rgba(195,54,46,.9);border-color:#f2948a}
+
+/* ---------- 錯誤 / 載入 ---------- */
+.center-box{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;width:min(88vw,420px);text-align:center;padding:24px 20px;border-radius:20px;
+  background:rgba(10,22,58,.82);border:1px solid var(--line);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.center-box h2{margin:0 0 8px;font-size:20px}
+.center-box p{margin:0 0 18px;color:#d5def7;line-height:1.7;font-size:15px}
+
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(-50%);z-index:40;max-width:88vw;
+  background:rgba(255,255,255,.95);color:#13244f;padding:10px 16px;border-radius:12px;font-size:14px;line-height:1.5;box-shadow:0 6px 20px rgba(0,0,0,.35);
+  opacity:0;pointer-events:none;transition:opacity .25s}
+#toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){.fade{transition-duration:.3s}#sound.idle{animation:none}}
+</style>
+</head>
+<body class="mode-designer">
+<canvas id="scene" aria-hidden="true"></canvas>
+<noscript><div class="center-box"><h2>需要開啟 JavaScript</h2><p>這張雪花賀卡需要 JavaScript 才能顯示，請改用一般瀏覽器開啟。</p></div></noscript>
+
+<!-- ===== 設計模式 ===== -->
+<main id="designer" hidden>
+  <h1 class="d-title"><small>Merry Christmas</small>聖誕雪花賀卡</h1>
+  <p class="d-sub">從中心往外畫出主枝，從枝上畫出分枝，自動對齊成冰晶</p>
+  <div class="pad-wrap">
+    <canvas id="pad" role="img" aria-label="雪花繪圖區：從中心往外畫出主枝，從枝上畫出分枝，每一筆會自動對齊成直線並轉成六個方向"></canvas>
+    <div class="pad-hint" id="padHint"><b>從中心往外畫一筆</b>或按下方「隨機生成」</div>
+  </div>
+  <div class="tools" role="toolbar" aria-label="繪圖工具">
+    <button class="tbtn accent" id="btnRandom" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>隨機生成</button>
+    <button class="tbtn" id="btnBeautify" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18.5 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg><span id="beautifyLabel">一鍵美化</span></button>
+    <button class="tbtn" id="btnUndo" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7L4.5 11.5 9 16"/><path d="M5 11.5h9.5a5 5 0 010 10H11"/></svg>復原</button>
+    <button class="tbtn" id="btnClear" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13"/></svg>清除</button>
+  </div>
+  <div class="row-thick"><span id="thickLabel">線條粗細</span>
+    <div class="seg" role="radiogroup" aria-labelledby="thickLabel" id="thick">
+      <button type="button" role="radio" aria-checked="false" data-w="0">細</button>
+      <button type="button" role="radio" aria-checked="true" data-w="1">中</button>
+      <button type="button" role="radio" aria-checked="false" data-w="2">粗</button>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn" id="btnPreview" type="button">預覽卡片</button>
+    <button class="btn primary" id="btnMake" type="button">產生連結・傳出去</button>
+  </div>
+  <p class="foot">雪花存在連結裡，不需要註冊帳號。<br>音樂為程式合成的音樂盒版〈Jingle Bells〉（1857 年，公有領域）。</p>
+</main>
+
+<!-- ===== 分享面板 ===== -->
+<div id="sheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <div class="sheet-card">
+    <h2 id="sheetTitle">卡片連結做好了！</h2>
+    <p class="sheet-sub">傳給對方，點開就能看到你的雪花。</p>
+    <input id="linkOut" type="text" readonly aria-label="卡片連結">
+    <p class="meta" id="linkMeta"></p>
+    <div class="sheet-btns">
+      <button id="btnShare" class="btn primary" type="button">分享（可選 LINE 等 App）</button>
+      <a id="btnLine" class="btn line" href="https://line.me/" target="_blank" rel="noopener">用 LINE 傳送</a>
+      <button id="btnCopy" class="btn" type="button">複製連結</button>
+      <button id="btnCloseSheet" class="btn ghost" type="button">繼續編輯</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 卡片模式 ===== -->
+<section id="card" hidden aria-label="聖誕雪花賀卡：夜空中一片旋轉發光的雪花">
+  <h1 class="xmas fade" id="xmasTitle" lang="en">Merry Christmas</h1>
+  <button id="sound" class="hit idle" type="button" aria-label="播放音樂">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" stroke="none"/>
+      <g class="waves"><path d="M15.5 9a4 4 0 010 6"/><path d="M18 6.5a7.5 7.5 0 010 11"/></g>
+      <g class="cross"><path d="M16 9.5l5 5M21 9.5l-5 5"/></g>
+      <g class="note"><path d="M17 16.5V7.5l4-1v8.5"/><circle cx="15.8" cy="16.6" r="1.4" fill="currentColor"/><circle cx="19.8" cy="15.1" r="1.4" fill="currentColor"/></g>
+    </svg>
+  </button>
+  <div id="tapHint" class="fade">輕觸畫面播放音樂・用手指滑過畫面吹散雪花</div>
+  <div class="card-foot">
+    <a id="makeOwn" class="pill hit" href="./">我也做一片送人</a>
+    <button id="backEdit" class="pill strong hit" type="button" hidden>返回編輯</button>
+  </div>
+</section>
+
+<div id="errorBox" class="center-box" role="alert" hidden>
+  <h2>哎呀，這張卡片打不開</h2>
+  <p id="errorText">連結可能不完整，或在傳送時被截斷了。<br>請向寄件人確認連結有完整複製。</p>
+  <a class="btn primary" id="errorMake" href="./">我也做一片送人</a>
+</div>
+<div id="loadingBox" class="center-box" hidden><p style="margin:0">卡片載入中…</p></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* =====================================================================
+ * 設定
+ * ---------------------------------------------------------------------
+ * CONFIG.storage：短網址儲存介面（目前未設定 → 使用「資料放在網址 #c=」的備援方式）
+ *
+ * 若之後申請了免費的 JSON key-value 儲存服務，可改成：
+ *
+ * CONFIG.storage = {
+ *   // data：已壓縮編碼的卡片字串（約 50~300 字元，僅含 A-Z a-z 0-9 - _）
+ *   // 回傳：短代碼字串（只能含 A-Z a-z 0-9 - _，1~64 字）
+ *   async saveCard(data) {
+ *     const res = await fetch('https://YOUR-KV-SERVICE.example.com/api/cards', {
+ *       method: 'POST',
+ *       headers: { 'Content-Type': 'application/json' },
+ *       body: JSON.stringify({ c: data })
+ *     });
+ *     if (!res.ok) throw new Error('save failed ' + res.status);
+ *     const json = await res.json();           // 例如 { "id": "a8Kx2q" }
+ *     return json.id;
+ *   },
+ *   // code：網址 #s= 後面的短代碼；回傳當初存進去的 data 字串
+ *   async loadCard(code) {
+ *     const res = await fetch('https://YOUR-KV-SERVICE.example.com/api/cards/' + encodeURIComponent(code));
+ *     if (!res.ok) throw new Error('load failed ' + res.status);
+ *     const json = await res.json();           // 例如 { "c": "IR..." }
+ *     return json.c;
+ *   }
+ * };
+ *
+ * 設定後產生的連結會是 …/#s=短代碼；儲存失敗時會自動退回 #c= 長連結，不會讓使用者卡住。
+ * ===================================================================== */
+const CONFIG = {
+  storage: null,
+  pointBudget: 220,      // 整片雪花（單一扇形）最多儲存的點數，超過會自動再簡化
+  draftKey: 'snowflake-card-draft-v4'
+};
+
+// ==CORE-BEGIN==
+/* 純邏輯（不依賴 DOM）：幾何、雪花結晶生成、編碼／解碼。tests/ 會直接抽出這段在 Node 測試。
+ *
+ * 筆畫有兩種：
+ *  - 鏡射筆畫 m=true：存在 30° 基本扇形內，畫成 12 份（6 個方向 × 鏡射）。隨機結晶與舊版 v1/v2 連結都是這種。
+ *  - 旋轉筆畫 m=false：手繪筆畫，存在整個圓內，只畫成 6 份（純六角旋轉，不鏡射）。 */
+const Core = (function () {
+  const VERSION = 4;
+  const SEG = Math.PI / 3, HALF = Math.PI / 6, SQ3 = Math.sqrt(3);
+  const QX = 255, QY = 127, YMAX = 0.5;           // 鏡射筆畫：扇形內 x∈[0,1] 8 bits、y∈[0,0.5] 7 bits
+  const QR = 511;                                  // v3 旋轉筆畫：x,y∈[-1,1] 各 9 bits
+  const QS = 510;                                  // v4 線段／六角形的位置：x,y∈[-1,1] 各 9 bits（0 剛好落在格點上）
+  const MAX_STROKES = 120, MAX_PTS_STROKE = 128;
+  const WIDTHS_LEGACY = [0.017, 0.028, 0.043];     // v1/v2 連結的線寬（保持原樣）
+  const WIDTHS = [0.0105, 0.017, 0.027];           // v3：較細、較俐落
+  const LEGACY_LIMITS = { to: 12, msg: 60, from: 12 };   // 舊版 v1 連結的文字欄位（只用於驗證）
+  const LEGACY_PRESETS = [
+    '聖誕快樂！願你的冬天溫暖又閃亮。',
+    '這片雪花是我親手畫的，送給你，祝你平安喜樂。',
+    '願新的一年，好運像雪花一樣紛紛落下。',
+    '謝謝你這一年的陪伴，聖誕快樂！'
+  ];
+  const td = new TextDecoder('utf-8', { fatal: true });
+
+  /* ---------- 幾何 ---------- */
+  function fold(x, y) {                      // 映射到基本扇形 θ∈[0,30°]
+    let r = Math.hypot(x, y);
+    if (r > 1) r = 1;
+    if (r < 1e-9) return [0, 0];
+    let a = Math.atan2(y, x);
+    a = ((a % SEG) + SEG) % SEG;
+    if (a > HALF) a = SEG - a;
+    return [r * Math.cos(a), r * Math.sin(a)];
+  }
+  function clampR(p, max) { max = max || 1; const r = Math.hypot(p[0], p[1]); return r > max ? [p[0] / r * max, p[1] / r * max] : [p[0], p[1]]; }
+  const clampI = (v, hi) => v < 0 ? 0 : v > hi ? hi : v;
+  function quant(p, m) {
+    if (m === false) return [clampI(Math.round((p[0] + 1) / 2 * QR), QR), clampI(Math.round((p[1] + 1) / 2 * QR), QR)];
+    return [clampI(Math.round(p[0] * QX), QX), clampI(Math.round(p[1] / YMAX * QY), QY)];
+  }
+  function dequant(q, m) {
+    if (m === false) return [q[0] / QR * 2 - 1, q[1] / QR * 2 - 1];
+    return [q[0] / QX, q[1] / QY * YMAX];
+  }
+  function segDist(p, a, b) {
+    const dx = b[0] - a[0], dy = b[1] - a[1], L2 = dx * dx + dy * dy;
+    let t = L2 ? ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L2 : 0;
+    t = t < 0 ? 0 : t > 1 ? 1 : t;
+    return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy);
+  }
+  function rdp(pts, eps) {                   // Ramer–Douglas–Peucker（非遞迴）
+    const n = pts.length;
+    if (n < 3) return pts.slice();
+    const keep = new Uint8Array(n); keep[0] = keep[n - 1] = 1;
+    const st = [[0, n - 1]];
+    while (st.length) {
+      const [a, b] = st.pop();
+      let md = 0, mi = -1;
+      for (let i = a + 1; i < b; i++) { const d = segDist(pts[i], pts[a], pts[b]); if (d > md) { md = d; mi = i; } }
+      if (mi > 0 && md > eps) { keep[mi] = 1; st.push([a, mi], [mi, b]); }
+    }
+    const out = []; for (let i = 0; i < n; i++) if (keep[i]) out.push(pts[i]);
+    return out;
+  }
+  function polyLen(pts) { let L = 0; for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); return L; }
+  function smooth(pts) {                     // 移動平均，保留端點
+    if (pts.length < 5) return pts.slice();
+    const out = [pts[0]];
+    for (let i = 1; i < pts.length - 1; i++) {
+      let sx = 0, sy = 0, n = 0;
+      for (let j = Math.max(0, i - 2); j <= Math.min(pts.length - 1, i + 2); j++) { sx += pts[j][0]; sy += pts[j][1]; n++; }
+      out.push([sx / n, sy / n]);
+    }
+    out.push(pts[pts.length - 1]);
+    return out;
+  }
+  /* 手繪原始點（正規化座標，圓半徑=1）→ 旋轉筆畫 {w, m:false, dense} */
+  function makeStroke(raw, w) {
+    let pts = raw.map(p => clampR(p));
+    if (pts.length === 0) return null;
+    if (polyLen(pts) < 0.012) pts = [pts[0]];
+    else pts = smooth(smooth(pts));
+    return { w: w | 0, m: false, dense: pts };
+  }
+  function quantizeDense(s, eps) {
+    const m = s.m !== false;
+    const src = (s.exact && eps < 0.03) || s.dense.length <= 2 ? s.dense : rdp(s.dense, eps);
+    const q = [];
+    for (const p of src) { const v = quant(p, m); const l = q[q.length - 1]; if (!l || l[0] !== v[0] || l[1] !== v[1]) q.push(v); }
+    return q;
+  }
+  /* 依點數預算決定簡化程度，寫入每筆的 q（量化後整數點）。結晶（exact）筆畫盡量不簡化。 */
+  function fitStrokes(strokes, budget) {
+    budget = budget || 220;
+    let eps = 0.0035;
+    for (let iter = 0; ; iter++) {
+      let total = 0, ok = true;
+      const qs = strokes.map(s => {
+        if (s.t === 's' || s.t === 'h') { total += s.t === 's' ? 2 : 7; return null; }    // 冰晶線段／六角形：固定大小，不需簡化
+        const q = quantizeDense(s, eps); total += q.length; if (q.length > MAX_PTS_STROKE) ok = false; return q;
+      });
+      if ((total <= budget && ok) || iter >= 40) { strokes.forEach((s, i) => { if (qs[i]) s.q = qs[i]; }); return { eps, total }; }
+      eps *= 1.35;
+    }
+  }
+  /* 量化筆畫 → 繪製用浮點筆畫；v 為連結格式版本（決定線寬表） */
+  function toFloat(strokes, v) {
+    const W = (v || VERSION) >= 3 ? WIDTHS : WIDTHS_LEGACY;
+    const out = [];
+    for (const s of strokes) {
+      if (s.t === 's' || s.t === 'h') { out.push(elemLine(s)); continue; }
+      if (!s.q || !s.q.length) continue;
+      const m = s.m !== false;
+      out.push({ w: s.w, lw: W[Math.max(0, Math.min(2, s.w))], m, pts: s.q.map(q => dequant(q, m)) });
+    }
+    return out;
+  }
+  /* v4 冰晶元素 → 繪製線：t='s' 直線段（起點、30° 倍數方向、長度）；t='h' 六角形（中心、外接半徑、方向） */
+  const dirOf = (i) => [Math.cos(i * HALF), Math.sin(i * HALF)];
+  function elemLine(el) {
+    const p = [el.x / QS * 2 - 1, el.y / QS * 2 - 1], u = dirOf(el.d), lw = WIDTHS[Math.max(0, Math.min(2, el.w))];
+    if (el.t === 's') { const L = el.l / 64; return { w: el.w, lw, m: false, seg: true, pts: [p, [p[0] + u[0] * L, p[1] + u[1] * L]] }; }
+    return { w: el.w, lw, m: false, hex: true, pts: hexPts(p, el.r / 128, el.d * HALF) };
+  }
+  function pointAt(pts, d) {
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], b = pts[i], L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+      if (d <= L || i === pts.length - 1) { const t = L ? Math.min(1, d / L) : 0; return { p: [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t], dir: [(b[0] - a[0]) / (L || 1), (b[1] - a[1]) / (L || 1)] }; }
+      d -= L;
+    }
+    return { p: pts[0], dir: [1, 0] };
+  }
+  /* 線段在 30° 扇形內最多能延伸多長（避免穿過鏡射線而和鄰枝相撞） */
+  function clipWedge(p, d, L, rmax) {
+    const c = Math.cos(HALF), s = Math.sin(HALF);
+    const den = c * d[1] - s * d[0];
+    if (den > 1e-9) { const t = (s * p[0] - c * p[1]) / den; if (t > 1e-6 && t < L) L = t * 0.86; }
+    if (d[1] < -1e-9 && p[1] > 1e-6) { const t = -p[1] / d[1]; if (t < L) L = t * 0.86; }
+    rmax = rmax || 0.98;
+    const b = p[0] * d[0] + p[1] * d[1], cc = p[0] * p[0] + p[1] * p[1] - rmax * rmax, disc = b * b - cc;
+    if (disc >= 0) { const t = -b + Math.sqrt(disc); if (t >= 0 && t < L) L = t; }
+    return Math.max(0, L);
+  }
+  function hexPts(c, r, ang) {
+    const out = [];
+    for (let i = 0; i <= 6; i++) { const a = ang + i * SEG; out.push([c[0] + Math.cos(a) * r, c[1] + Math.sin(a) * r]); }
+    return out;
+  }
+  const pkey = (p) => Math.round(p[0] * 2000) + ',' + Math.round(p[1] * 2000);
+
+  /* 舊版 v1/v2 的「一鍵美化」與繪製幾何（完全保持原樣） */
+  function decorateLegacy(fl, beautify) {
+    const lines = fl.map(s => ({ w: s.w, pts: s.pts }));
+    const tips = [];
+    fl.forEach(s => { tips.push(s.pts[s.pts.length - 1]); if (s.pts.length > 1) tips.push(s.pts[0]); });
+    if (beautify) {
+      for (const s of fl) {
+        if (s.pts.length < 2) continue;
+        const len = polyLen(s.pts);
+        if (len < 0.14) continue;
+        const fr = len > 0.45 ? [0.32, 0.56, 0.78] : [0.42, 0.74];
+        for (const f of fr) {
+          const { p, dir } = pointAt(s.pts, f * len);
+          let dx = dir[0], dy = dir[1];
+          if (dx * p[0] + dy * p[1] < 0) { dx = -dx; dy = -dy; }
+          const base = Math.atan2(dy, dx);
+          const bl = Math.min(0.13, len * 0.22) * (1.15 - f * 0.55);
+          for (const sg of [1, -1]) {
+            const a = base + sg * Math.PI / 3;
+            let e = [p[0] + Math.cos(a) * bl, p[1] + Math.sin(a) * bl];
+            e = clampR(e);
+            lines.push({ w: Math.max(0, s.w - 1), pts: [p, e] });
+            tips.push(e);
+          }
+        }
+      }
+      const r = 0.075;
+      lines.push({ w: 0, pts: [[r, 0], [r / 2, r * SQ3 / 2]] });
+      lines.push({ w: 1, pts: [[0, 0]] });
+    }
+    return { lines: lines.map(l => ({ lw: WIDTHS_LEGACY[l.w], m: true, pts: l.pts })), tips: tips.map(p => ({ p, m: true })) };
+  }
+
+  /* v3 繪製幾何：原筆畫 +（美化時）依真實結晶邏輯加上平行 60° 側枝與六角小板尖端 */
+  function decorate(fl, beautify, v) {
+    v = v || VERSION;
+    if (v < 3) return decorateLegacy(fl, beautify);
+    if (v === 3) return decorate3(fl, beautify);
+    return decorate4(fl, beautify);
+  }
+  function decorate3(fl, beautify) {
+    const lines = fl.map(s => ({ lw: s.lw, m: s.m, pts: s.pts }));
+    const tips = [];
+    const thinW = (lw) => Math.max(WIDTHS[0] * 0.85, lw * 0.72);
+    const env = (u) => Math.pow(Math.sin(Math.PI * Math.min(1, Math.max(0, (u - 0.02) / 0.98))), 0.6) * (1.1 - 0.45 * u);
+    for (const s of fl) {
+      if (s.pts.length < 2) { tips.push({ p: s.pts[0], m: s.m }); continue; }
+      if (!s.m) {
+        // 手繪筆畫：以「內端→外端」方向為主軸，加上互相平行的 60° 側枝，外端加六角小板
+        let pts = s.pts;
+        if (Math.hypot(pts[0][0], pts[0][1]) > Math.hypot(pts[pts.length - 1][0], pts[pts.length - 1][1])) pts = pts.slice().reverse();
+        const a = pts[0], b = pts[pts.length - 1];
+        tips.push({ p: a, m: false }, { p: b, m: false });
+        if (!beautify) continue;
+        const len = polyLen(pts), chord = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        if (len < 0.15 || chord < len * 0.45) continue;
+        const dir = [(b[0] - a[0]) / chord, (b[1] - a[1]) / chord], base = Math.atan2(dir[1], dir[0]);
+        const nb = len > 0.55 ? 4 : len > 0.32 ? 3 : 2, Lmax = Math.min(0.13, len * 0.26), lw = thinW(s.lw);
+        for (let i = 0; i < nb; i++) {
+          const u = 0.2 + 0.68 * (i + 0.5) / nb;
+          const p = pointAt(pts, u * len).p, L = Lmax * env(u);
+          for (const sg of [1, -1]) {
+            const ang = base + sg * SEG;
+            const e = clampR([p[0] + Math.cos(ang) * L, p[1] + Math.sin(ang) * L], 0.99);
+            lines.push({ lw, m: false, pts: [p, e] }); tips.push({ p: e, m: false });
+          }
+        }
+        const hr = Math.min(0.034, len * 0.07);
+        lines.push({ lw, m: false, pts: hexPts(clampR([b[0] - dir[0] * hr, b[1] - dir[1] * hr], 0.99 - hr), hr, base) });
+      } else {
+        // 鏡射筆畫（結晶）：找出末端（度數 1 的頂點），美化時加六角小板；長的獨立線段加平行側枝
+        const deg = new Map(), segs = new Map();
+        for (let i = 1; i < s.pts.length; i++) {
+          const p = s.pts[i - 1], q = s.pts[i], kp = pkey(p), kq = pkey(q);
+          if (kp === kq) continue;
+          const k = kp < kq ? kp + '|' + kq : kq + '|' + kp;
+          if (segs.has(k)) continue;
+          segs.set(k, [p, q]);
+          deg.set(kp, (deg.get(kp) || 0) + 1); deg.set(kq, (deg.get(kq) || 0) + 1);
+        }
+        const ends = [];
+        const onMirror = (p) => Math.abs(Math.atan2(p[1], p[0]) - HALF) < 0.02;   // 落在 30° 鏡射線上的端點其實和鏡像相連
+        for (const [, sg] of segs) for (const p of sg) if (deg.get(pkey(p)) === 1 && !onMirror(p)) ends.push([p, sg[0] === p ? sg[1] : sg[0]]);
+        for (const [p] of ends) tips.push({ p, m: true });
+        if (!beautify) continue;
+        const lw = thinW(s.lw);
+        for (const [, sg] of segs) {
+          let [a, b] = sg;
+          if (Math.hypot(a[0], a[1]) > Math.hypot(b[0], b[1])) [a, b] = [b, a];
+          const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+          if (len < 0.2) continue;
+          const dir = [(b[0] - a[0]) / len, (b[1] - a[1]) / len], base = Math.atan2(dir[1], dir[0]);
+          const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], rm = Math.hypot(mid[0], mid[1]) || 1;
+          if ((dir[0] * mid[0] + dir[1] * mid[1]) / rm < 0.94) continue;      // 只替「放射狀」的臂加側枝（六角板邊緣不加）
+          for (let i = 0; i < 2; i++) {
+            const u = 0.35 + 0.4 * i, p = [a[0] + dir[0] * len * u, a[1] + dir[1] * len * u];
+            for (const sgn of [1, -1]) {
+              const d = [Math.cos(base + sgn * SEG), Math.sin(base + sgn * SEG)];
+              const L = clipWedge(p, d, Math.min(0.08, len * 0.22) * env(u));
+              if (L > 0.015) { const e = [p[0] + d[0] * L, p[1] + d[1] * L]; lines.push({ lw, m: true, pts: [p, e] }); tips.push({ p: e, m: true }); }
+            }
+          }
+        }
+        for (const [p, q] of ends) {
+          if (Math.hypot(p[0], p[1]) < 0.4 || Math.abs(p[1]) > 0.01 || Math.abs(q[1]) > 0.01) continue;   // 只在主臂尖端加六角小板
+          const ang = Math.atan2(p[1] - q[1], p[0] - q[0]), hr = 0.034;
+          lines.push({ lw, m: true, pts: hexPts([p[0] - Math.cos(ang) * hr, p[1] - Math.sin(ang) * hr], hr, ang) });
+        }
+      }
+    }
+    if (beautify) {
+      const r = 0.055;
+      lines.push({ lw: WIDTHS[0], m: false, pts: hexPts([0, 0], r, 0) });
+    }
+    return { lines, tips };
+  }
+
+
+  /* v4：結晶（鏡射）部分沿用 v3；手繪引導出的直線段依真實結晶邏輯美化：
+   * 放射狀的主枝加上互相平行、±60° 朝外的側枝；空著的主枝尖端加六角小板。 */
+  function decorate4(fl, beautify) {
+    const mir = fl.filter(l => l.m), hand = fl.filter(l => !l.m);
+    const base = decorate3(mir, beautify);
+    const lines = base.lines, tips = base.tips;
+    const all = expandSegs(fl);
+    const env = (u) => Math.pow(Math.sin(Math.PI * Math.min(1, Math.max(0, (u - 0.02) / 0.98))), 0.6) * (1.1 - 0.45 * u);
+    for (const l of hand) {
+      lines.push({ lw: l.lw, m: false, pts: l.pts });
+      if (l.hex || l.pts.length !== 2) continue;
+      let [a, b] = l.pts;
+      if (Math.hypot(a[0], a[1]) > Math.hypot(b[0], b[1])) [a, b] = [b, a];
+      tips.push({ p: b, m: false });
+      if (!beautify) continue;
+      const len = Math.hypot(b[0] - a[0], b[1] - a[1]); if (len < 0.2) continue;
+      const u = [(b[0] - a[0]) / len, (b[1] - a[1]) / len], mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], rm = Math.hypot(mid[0], mid[1]) || 1;
+      if ((u[0] * mid[0] + u[1] * mid[1]) / rm < 0.94) continue;           // 只替放射狀的主枝加
+      const lw = Math.max(WIDTHS[0] * 0.85, l.lw * 0.72), ang = Math.atan2(u[1], u[0]);
+      for (const f of [0.4, 0.7]) {
+        const p = [a[0] + u[0] * len * f, a[1] + u[1] * len * f], L = Math.min(Math.min(0.09, len * 0.24) * env(f), Math.hypot(p[0], p[1]) * 0.8);
+        if (L < 0.015) continue;
+        for (const sg of [1, -1]) { const e = clampR([p[0] + Math.cos(ang + sg * SEG) * L, p[1] + Math.sin(ang + sg * SEG) * L], 0.99); lines.push({ lw, m: false, pts: [p, e] }); tips.push({ p: e, m: false }); }
+      }
+      const busy = all.filter(g => Math.hypot(g.a[0] - b[0], g.a[1] - b[1]) < 0.015 || Math.hypot(g.b[0] - b[0], g.b[1] - b[1]) < 0.015).length;
+      if (busy <= 1 && Math.hypot(b[0], b[1]) > 0.4) { const hr = 0.032; lines.push({ lw, m: false, pts: hexPts([b[0] - u[0] * hr, b[1] - u[1] * hr], hr, ang) }); }
+    }
+    return { lines, tips };
+  }
+
+  /* ---------- 手繪引導：把一筆（不論多彎、多抖）解讀成一條符合冰晶規則的直線段 ---------- */
+  const MIN_LEN = 0.05, CENTER_R = 0.13, ATTACH = 0.1, RMAX = 0.97;
+  const idx30 = (a) => ((Math.round(a / HALF) % 12) + 12) % 12;
+  function expandSegs(fl) {                  // 畫面上所有線段（含 6 份旋轉／12 份鏡射），每段 a→b 由內往外
+    const segs = [];
+    for (const l of fl) for (let k = 0; k < 6; k++) {
+      const ca = Math.cos(k * SEG), sa = Math.sin(k * SEG);
+      for (let m = 1; m >= (l.m ? -1 : 1); m -= 2) {
+        const T = (p) => { const x = p[0], y = p[1] * m; return [x * ca - y * sa, x * sa + y * ca]; };
+        for (let i = 1; i < l.pts.length; i++) {
+          let a = T(l.pts[i - 1]), b = T(l.pts[i]);
+          if (Math.hypot(b[0] - a[0], b[1] - a[1]) < 1e-4) continue;
+          if (Math.hypot(a[0], a[1]) > Math.hypot(b[0], b[1])) [a, b] = [b, a];
+          segs.push({ a, b, hex: !!l.hex });
+        }
+      }
+    }
+    return segs;
+  }
+  function closest(p, g) {
+    const dx = g.b[0] - g.a[0], dy = g.b[1] - g.a[1], L2 = dx * dx + dy * dy;
+    let t = L2 ? ((p[0] - g.a[0]) * dx + (p[1] - g.a[1]) * dy) / L2 : 0; t = Math.max(0, Math.min(1, t));
+    const q = [g.a[0] + dx * t, g.a[1] + dy * t];
+    return { q, t, d: Math.hypot(p[0] - q[0], p[1] - q[1]) };
+  }
+  function intersect(p, r, a, b) {           // 線段 p→r 與 a→b 的交點（含兩邊參數）
+    const d1 = [r[0] - p[0], r[1] - p[1]], d2 = [b[0] - a[0], b[1] - a[1]], den = d1[0] * d2[1] - d1[1] * d2[0];
+    if (Math.abs(den) < 1e-9) return null;
+    const t = ((a[0] - p[0]) * d2[1] - (a[1] - p[1]) * d2[0]) / den, u = ((a[0] - p[0]) * d1[1] - (a[1] - p[1]) * d1[0]) / den;
+    if (t < 0 || t > 1 || u < -0.02 || u > 1.02) return null;
+    return { X: [p[0] + d1[0] * t, p[1] + d1[1] * t], t, u };
+  }
+  const qpos = (v) => Math.max(0, Math.min(QS, Math.round((v + 1) / 2 * QS)));
+  function mkSeg(p, d, len, w, rule) {
+    const u = dirOf(d), b = p[0] * u[0] + p[1] * u[1], c = p[0] * p[0] + p[1] * p[1] - RMAX * RMAX, disc = b * b - c;
+    if (disc >= 0) len = Math.min(len, -b + Math.sqrt(disc));          // 不超出圓
+    const x = qpos(p[0]), y = qpos(p[1]), px = x / QS * 2 - 1, py = y / QS * 2 - 1;
+    if (Math.hypot(px, py) > RMAX + 0.002) return null;
+    let l = Math.min(63, Math.round(len * 64));
+    while (l > 0 && Math.hypot(px + u[0] * l / 64, py + u[1] * l / 64) > RMAX + 0.002) l--;   // 量化後仍不超出圓
+    if (l < Math.round(MIN_LEN * 64)) return null;
+    return { t: 's', w, x, y, d, l, rule };
+  }
+  function mkHex(c, r, d, w, rule) {
+    const rr = Math.max(2, Math.min(127, Math.round(r * 128)));
+    return { t: 'h', w, x: qpos(c[0]), y: qpos(c[1]), r: rr, d: ((d % 12) + 12) % 12, rule };
+  }
+  /* 規則（依序）：
+   *  1. 很短（點一下）：在主枝或分枝尖端附近 → 六角小板；否則忽略
+   *  2. 從中心附近開始 → 沿最近的主軸畫主枝（長度＝投影長度）
+   *  3. 橫越一條線（約略垂直）→ 靠近尖端：六角小板；橫越主枝：和主枝垂直的板邊，接近完整六角形時直接成為六角板
+   *  4. 從線條附近開始 → 從線上最近點長出分枝（和母線夾 ±60°、朝外），接近末端且順著方向則延長
+   *  5. 從空白處開始 → 對齊到最近的主軸
+   *  不管筆跡多彎，只看起點、終點與整體方向，結果永遠是一條直線段或六角形。 */
+  function interpret(raw, fl, w) {
+    if (!raw || !raw.length) return null;
+    const s = clampR(raw[0], RMAX), e = clampR(raw[raw.length - 1], RMAX);
+    const dx = e[0] - s[0], dy = e[1] - s[1], L = Math.hypot(dx, dy);
+    const dn = L ? [dx / L, dy / L] : [1, 0];
+    const segs = expandSegs(fl).filter(g => !g.hex);
+    const rs = Math.hypot(s[0], s[1]);
+    // 1. 點一下
+    if (L < MIN_LEN) {
+      let best = null, bd = 0.07;
+      for (const g of segs) { const rb = Math.hypot(g.b[0], g.b[1]), d = Math.hypot(s[0] - g.b[0], s[1] - g.b[1]); if (rb > 0.3 && d < bd) { bd = d; best = g; } }
+      if (!best) return null;
+      const gi = idx30(Math.atan2(best.b[1] - best.a[1], best.b[0] - best.a[0])), u = dirOf(gi), rh = 0.035;
+      return mkHex([best.b[0] - u[0] * rh, best.b[1] - u[1] * rh], rh, gi, w, 'hexTip');
+    }
+    // 2. 從中心
+    if (rs < CENTER_R) {
+      const ref = Math.hypot(e[0], e[1]) > 0.05 ? e : dn;
+      const d = ((Math.round(Math.atan2(ref[1], ref[0]) / SEG) * 2) % 12 + 12) % 12, u = dirOf(d);
+      return mkSeg([0, 0], d, e[0] * u[0] + e[1] * u[1], w, 'arm');
+    }
+    // 3. 橫越
+    let cross = null;
+    const mid = [(s[0] + e[0]) / 2, (s[1] + e[1]) / 2];
+    for (const g of segs) {
+      const gl = Math.hypot(g.b[0] - g.a[0], g.b[1] - g.a[1]), gu = [(g.b[0] - g.a[0]) / gl, (g.b[1] - g.a[1]) / gl];
+      if (Math.abs(gu[0] * dn[1] - gu[1] * dn[0]) < 0.82) continue;          // 夾角至少約 55°
+      const X = intersect(s, e, g.a, g.b);
+      if (!X || X.t < 0.2 || X.t > 0.8) continue;                             // 起點、終點都要明顯在線的兩側
+      const md = Math.hypot(X.X[0] - mid[0], X.X[1] - mid[1]);
+      if (!cross || md < cross.md) cross = { g, X: X.X, md, gu };
+    }
+    if (cross) {
+      const { g, X, gu } = cross;
+      const gi = idx30(Math.atan2(gu[1], gu[0])), u = dirOf(gi), nrm = [-u[1], u[0]];
+      const h = Math.abs(dx * nrm[0] + dy * nrm[1]) / 2;
+      if (Math.hypot(X[0] - g.b[0], X[1] - g.b[1]) < 0.08 && Math.hypot(g.b[0], g.b[1]) > 0.3) {
+        const rh = Math.max(0.025, Math.min(0.07, h));
+        return mkHex([g.b[0] - u[0] * rh, g.b[1] - u[1] * rh], rh, gi, w, 'hexTip');
+      }
+      const onAxis = Math.abs(g.a[0] * u[1] - g.a[1] * u[0]) < 0.02 && gi % 2 === 0;
+      const rc = X[0] * u[0] + X[1] * u[1];
+      if (onAxis) {
+        const hs = rc * Math.tan(HALF);
+        if (h > hs * 0.7) return mkHex([0, 0], rc / Math.cos(HALF), gi + 1, w, 'plate');
+      }
+      const c = onAxis ? [u[0] * rc, u[1] * rc] : X;
+      let hh = Math.min(0.2, Math.max(h, MIN_LEN / 2 + 0.005));
+      const cn = c[0] * nrm[0] + c[1] * nrm[1], cc = c[0] * c[0] + c[1] * c[1] - RMAX * RMAX;   // 兩端都留在圓內
+      if (cn * cn - cc > 0) hh = Math.min(hh, Math.sqrt(cn * cn - cc) - Math.abs(cn)); else return null;
+      return mkSeg([c[0] - nrm[0] * hh, c[1] - nrm[1] * hh], idx30(Math.atan2(nrm[1], nrm[0])), hh * 2, w, 'edge');
+    }
+    // 4. 從線上長出分枝
+    let near = null;
+    for (const g of segs) { const c = closest(s, g); if (!near || c.d < near.d) near = Object.assign(c, { g }); }
+    if (near && near.d < ATTACH) {
+      const { g, q, t } = near;
+      const gi = idx30(Math.atan2(g.b[1] - g.a[1], g.b[0] - g.a[0]));
+      const rq = Math.hypot(q[0], q[1]), ph = rq > 1e-6 ? [q[0] / rq, q[1] / rq] : dirOf(gi);
+      let best = null, bs = 0.15;
+      for (const k of [2, -2, 4, 8]) {
+        const d = ((gi + k) % 12 + 12) % 12, u = dirOf(d);
+        if (u[0] * ph[0] + u[1] * ph[1] < 0.2) continue;                     // 只朝外長
+        const sc = u[0] * dn[0] + u[1] * dn[1];
+        if (sc > bs) { bs = sc; best = { d, start: q, rule: 'branch' }; }
+      }
+      if (t > 0.85) { const u = dirOf(gi), sc = u[0] * dn[0] + u[1] * dn[1]; if (sc > Math.max(bs, 0.85)) best = { d: gi, start: g.b, rule: 'extend' }; }
+      if (best) {
+        const u = dirOf(best.d);
+        return mkSeg(best.start, best.d, (e[0] - best.start[0]) * u[0] + (e[1] - best.start[1]) * u[1], w, best.rule);
+      }
+    }
+    // 5. 空白處 → 對齊主軸
+    const d = ((Math.round(Math.atan2(mid[1], mid[0]) / SEG) * 2) % 12 + 12) % 12, u = dirOf(d);
+    let lo = s[0] * u[0] + s[1] * u[1], hi = e[0] * u[0] + e[1] * u[1];
+    if (lo > hi) [lo, hi] = [hi, lo];
+    lo = Math.max(0, lo); hi = Math.min(RMAX, hi);
+    if (lo < CENTER_R) lo = 0;
+    return mkSeg([u[0] * lo, u[1] * lo], d, hi - lo, w, 'axis');
+  }
+
+  /* ---------- 隨機雪花：模仿真實冰晶型態 ---------- */
+  function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const CRYSTAL_TYPES = ['dendrite', 'fern', 'sectored', 'stellarPlate', 'hexPlate'];
+  /* 把同粗細、彼此相連的線段串成一筆（必要時原路折返），減少筆畫數與連結長度 */
+  function chain(segs) {
+    const out = [];
+    for (let w = 0; w < 3; w++) {
+      const nodes = new Map(), edges = [];
+      const node = (p) => { const k = pkey(p); if (!nodes.has(k)) nodes.set(k, { p, e: [] }); return nodes.get(k); };
+      for (const s of segs) {
+        if (s.w !== w) continue;
+        const a = node(s.a), b = node(s.b);
+        if (a === b) continue;
+        const e = { a, b, used: false }; edges.push(e); a.e.push(e); b.e.push(e);
+      }
+      for (;;) {
+        let start = null;
+        for (const n of nodes.values()) { const free = n.e.filter(e => !e.used).length; if (free === 1) { start = n; break; } if (free && !start) start = n; }
+        if (!start) break;
+        const path = [start.p], back = [false];
+        const dfs = (n) => { for (const e of n.e) if (!e.used) { e.used = true; const o = e.a === n ? e.b : e.a; path.push(o.p); back.push(false); dfs(o); path.push(n.p); back.push(true); } };
+        dfs(start);
+        while (back.length > 1 && back[back.length - 1]) { back.pop(); path.pop(); }
+        for (let i = 0; i < path.length - 1; i += MAX_PTS_STROKE - 1) out.push({ w, m: true, exact: true, dense: path.slice(i, i + MAX_PTS_STROKE) });
+      }
+    }
+    return out;
+  }
+  function randomFlake(rand, type) {
+    rand = rand || Math.random;
+    const R = (a, b) => a + rand() * (b - a);
+    if (!type) { const x = rand(); type = x < 0.3 ? 'dendrite' : x < 0.45 ? 'fern' : x < 0.65 ? 'sectored' : x < 0.85 ? 'stellarPlate' : 'hexPlate'; }
+    const segs = [];
+    const S = (a, b, w) => { if (Math.hypot(b[0] - a[0], b[1] - a[1]) > 0.006) segs.push({ a, b, w }); };
+    const hexEdge = (r, w) => S([r, 0], [r * 0.75, r * SQ3 / 4], w);          // 六角形的半邊（到 30° 鏡射線）
+    const ray = (p, deg, L, w) => {
+      const a = deg * Math.PI / 180, d = [Math.cos(a), Math.sin(a)];
+      L = clipWedge(p, d, L);
+      if (L < 0.012) return null;
+      const e = [p[0] + d[0] * L, Math.max(0, p[1] + d[1] * L)];
+      S(p, e, w); return e;
+    };
+    const spineTo = (xs, T, w) => {                                           // 主軸（在分枝點切開，方便串成一筆）
+      const cuts = [0].concat(xs.filter(x => x > 0 && x < T).sort((a, b) => a - b), [T]);
+      for (let i = 1; i < cuts.length; i++) S([cuts[i - 1], 0], [cuts[i], 0], w);
+    };
+    // 生長包絡：分枝在臂中段最長，靠近中心與尖端較短
+    const envelope = (u, peak) => u < peak ? 0.3 + 0.7 * Math.sin(Math.PI / 2 * u / peak) : 0.18 + 0.82 * Math.cos(Math.PI / 2 * (u - peak) / (1 - peak));
+    const centerHex = (r) => { hexEdge(r, 0); return r; };
+    const tipPlate = (c, rp, w) => { S([c + rp, 0], [c + rp / 2, rp * SQ3 / 2], w); S([c + rp / 2, rp * SQ3 / 2], [c - rp / 2, rp * SQ3 / 2], w); S([c - rp / 2, rp * SQ3 / 2], [c - rp, 0], w); };
+
+    if (type === 'dendrite' || type === 'fern') {
+      const fern = type === 'fern';
+      const T = R(0.9, 0.97);
+      const r0 = rand() < 0.75 ? centerHex(R(0.05, 0.1)) : 0;
+      const nb = fern ? 9 + Math.floor(rand() * 5) : 4 + Math.floor(rand() * 3);
+      const a0 = Math.max(r0 + 0.07, fern ? 0.18 : 0.22), a1 = T - (fern ? 0.05 : 0.1);
+      const Lmax = fern ? R(0.12, 0.17) : R(0.22, 0.32), peak = R(0.3, 0.55);
+      const subs = !fern && rand() < 0.55;
+      const xs = [];
+      for (let i = 0; i < nb; i++) {
+        const u = (i + 0.5) / nb + (fern ? 0 : (rand() - 0.5) * 0.08);
+        const x = a0 + (a1 - a0) * u;
+        xs.push(x);
+        const L = Lmax * envelope(u, peak) * (fern ? 1 : R(0.9, 1.1));
+        const e = ray([x, 0], 60, L, 0);
+        if (e && subs && L > Lmax * 0.6) {                                    // 只有較長的分枝長出細小次分枝
+          const bl = Math.hypot(e[0] - x, e[1]), f = R(0.5, 0.62), q = [x + (e[0] - x) * f, e[1] * f], l = bl * R(0.2, 0.28);
+          ray(q, 0, l, 0); ray(q, 120, l * 0.8, 0);
+        }
+      }
+      spineTo(xs, T, 0);
+      S([0, 0], [T, 0], 1);                                                     // 較粗的主軸
+      if (!fern && rand() < 0.3) tipPlate(T - 0.04, 0.04, 0);
+    } else if (type === 'sectored') {
+      const Rp = R(0.58, 0.82), ext = rand() < 0.5 ? R(0.06, 0.14) : 0;
+      hexEdge(Rp, 1);
+      S([0, 0], [Rp + ext, 0], 1);
+      if (ext) { const c = Rp + ext; ray([c - ext * 0.45, 0], 60, ext * 0.5, 0); }
+      centerHex(R(0.07, 0.11));
+      const k = 2 + Math.floor(rand() * 3), f = R(0.3, 0.55);
+      for (let i = 0; i < k; i++) { const r = Rp * (0.3 + 0.6 * (i + 0.5) / k); ray([r, 0], 120, f * r / 2, 0); }
+      if (rand() < 0.5) hexEdge(Rp * R(0.4, 0.55), 0);
+    } else if (type === 'stellarPlate') {
+      const T = R(0.82, 0.94), r0 = R(0.1, 0.17);
+      hexEdge(r0, 1);
+      if (rand() < 0.5) hexEdge(r0 * 0.55, 0);
+      S([0, 0], [T, 0], 1);
+      if (rand() < 0.5) {                                                       // 寬板狀的臂
+        const w = Math.min(r0 * 0.45, R(0.03, 0.055)), tx = T - w / Math.tan(Math.PI / 3);   // 平行邊＋60° 尖端刻面
+        S([r0 * 0.95, w], [tx, w], 0); S([tx, w], [T, 0], 0);
+      } else {                                                                  // 臂尖六角小板
+        const rp = R(0.065, 0.1);
+        tipPlate(T - rp, rp, 0);
+        if (rand() < 0.6) { const x = r0 + (T - rp - r0) * R(0.4, 0.6); ray([x, 0], 60, R(0.08, 0.14), 0); }
+      }
+    } else {                                                                    // hexPlate
+      const Rp = R(0.55, 0.85);
+      hexEdge(Rp, 1);
+      const rings = 1 + Math.floor(rand() * 2);
+      for (let i = 0; i < rings; i++) hexEdge(Rp * (rings === 1 ? R(0.55, 0.75) : (i ? R(0.68, 0.8) : R(0.38, 0.5))), 0);
+      const rib = rand();
+      if (rib < 0.7) S([0, 0], [Rp, 0], 0);
+      else { const d = Rp * SQ3 / 2; S([0, 0], [d * Math.cos(HALF), d * Math.sin(HALF)], 0); }
+      centerHex(R(0.06, 0.1));
+      if (rand() < 0.35) { const L = R(0.06, 0.12); S([Rp, 0], [Rp + L, 0], 1); }
+    }
+    const strokes = chain(segs);
+    fitStrokes(strokes);
+    strokes.type = type;
+    return strokes;
+  }
+
+  /* ---------- 位元串流 ---------- */
+  function BitW() { this.bytes = []; this.cur = 0; this.n = 0; }
+  BitW.prototype.w = function (v, bits) { for (let i = bits - 1; i >= 0; i--) { this.cur = (this.cur << 1) | ((v >> i) & 1); if (++this.n === 8) { this.bytes.push(this.cur); this.cur = 0; this.n = 0; } } };
+  BitW.prototype.align = function () { if (this.n) { this.bytes.push((this.cur << (8 - this.n)) & 255); this.cur = 0; this.n = 0; } };
+  function BitR(b) { this.b = b; this.pos = 0; }
+  BitR.prototype.r = function (bits) { let v = 0; for (let i = 0; i < bits; i++) { const k = this.pos >> 3; if (k >= this.b.length) throw new Error('eof'); v = (v << 1) | ((this.b[k] >> (7 - (this.pos & 7))) & 1); this.pos++; } return v; };
+  BitR.prototype.align = function () { this.pos = (this.pos + 7) & ~7; };
+  BitR.prototype.byte = function () { this.align(); const k = this.pos >> 3; if (k >= this.b.length) throw new Error('eof'); this.pos += 8; return this.b[k]; };
+
+  function crc8(bytes) { let c = 0; for (let i = 0; i < bytes.length; i++) { c ^= bytes[i]; for (let j = 0; j < 8; j++) c = (c & 0x80) ? ((c << 1) ^ 0x07) & 255 : (c << 1) & 255; } return c; }
+  function b64url(bytes) { let s = ''; for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+  function unb64url(str) {
+    if (!/^[A-Za-z0-9_-]+$/.test(str) || str.length % 4 === 1) throw new Error('bad base64');
+    let s = str.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '=';
+    const bin = atob(s), out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function cpLen(s) { return Array.from(s).length; }
+
+  /* v1/v2 筆畫：全部是鏡射筆畫，差分 5+5 bits */
+  function readStrokesV12(r) {
+    const n = r.r(6);
+    if (n < 1) throw new Error('no strokes');
+    const strokes = [];
+    for (let k = 0; k < n; k++) {
+      const w = r.r(2); if (w > 2) throw new Error('width');
+      const np = r.r(7) + 1;
+      let x = r.r(8), y = r.r(7);
+      const q = [[x, y]];
+      for (let i = 1; i < np; i++) {
+        if (r.r(1)) { x += r.r(5) - 16; y += r.r(5) - 16; if (x < 0 || x > QX || y < 0 || y > QY) throw new Error('range'); }
+        else { x = r.r(8); y = r.r(7); }
+        q.push([x, y]);
+      }
+      strokes.push({ w, m: true, q });
+    }
+    return strokes;
+  }
+  /* v4 位元格式：版本 4b ｜ 美化 1b ｜ 保留 3b ｜ 元素數 7b ｜ 每個元素：類型 2b、粗細 2b，然後
+   *   類型 0（折線，結晶用）：鏡射 1b、點數-1 7b、首點、之後每點 1b 旗標 + 差分 6b+6b 或絕對座標（同 v3）
+   *   類型 1（直線段）：起點 9b+9b、方向 4b（30° 的倍數）、長度 6b（1/64）
+   *   類型 2（六角形）：中心 9b+9b、外接半徑 7b（1/128）、方向 4b
+   * ｜ 補齊位元組 ｜ CRC-8 */
+  function encode(card) {
+    const strokes = (card.strokes || []).filter(s => s.t === 's' || s.t === 'h' || (s.q && s.q.length)).slice(0, MAX_STROKES);
+    if (!strokes.length) throw new Error('no strokes');
+    const w = new BitW();
+    w.w(VERSION, 4); w.w(card.beautify ? 1 : 0, 1); w.w(0, 3);
+    w.w(strokes.length, 7);
+    for (const s of strokes) {
+      const wd = Math.max(0, Math.min(2, s.w | 0));
+      if (s.t === 's') { w.w(1, 2); w.w(wd, 2); w.w(s.x, 9); w.w(s.y, 9); w.w(s.d, 4); w.w(s.l, 6); continue; }
+      if (s.t === 'h') { w.w(2, 2); w.w(wd, 2); w.w(s.x, 9); w.w(s.y, 9); w.w(s.r, 7); w.w(s.d, 4); continue; }
+      const m = s.m !== false, q = s.q.slice(0, MAX_PTS_STROKE);
+      const bx = m ? 8 : 9, by = m ? 7 : 9;
+      w.w(0, 2); w.w(wd, 2); w.w(m ? 1 : 0, 1);
+      w.w(q.length - 1, 7);
+      w.w(q[0][0], bx); w.w(q[0][1], by);
+      for (let i = 1; i < q.length; i++) {
+        const dx = q[i][0] - q[i - 1][0], dy = q[i][1] - q[i - 1][1];
+        if (dx >= -32 && dx <= 31 && dy >= -32 && dy <= 31) { w.w(1, 1); w.w(dx + 32, 6); w.w(dy + 32, 6); }
+        else { w.w(0, 1); w.w(q[i][0], bx); w.w(q[i][1], by); }
+      }
+    }
+    w.align();
+    const bytes = w.bytes;
+    bytes.push(crc8(bytes));
+    return b64url(bytes);
+  }
+  function readPoly(r, w, m) {
+    const bx = m ? 8 : 9, by = m ? 7 : 9, hx = m ? QX : QR, hy = m ? QY : QR;
+    const np = r.r(7) + 1;
+    let x = r.r(bx), y = r.r(by);
+    if (x > hx || y > hy) throw new Error('range');
+    const q = [[x, y]];
+    for (let i = 1; i < np; i++) {
+      if (r.r(1)) { x += r.r(6) - 32; y += r.r(6) - 32; }
+      else { x = r.r(bx); y = r.r(by); }
+      if (x < 0 || x > hx || y < 0 || y > hy) throw new Error('range');
+      q.push([x, y]);
+    }
+    return { w, m, q };
+  }
+  function readStrokesV4(r) {
+    const n = r.r(7);
+    if (n < 1) throw new Error('no strokes');
+    const out = [];
+    for (let k = 0; k < n; k++) {
+      const t = r.r(2), w = r.r(2);
+      if (w > 2) throw new Error('width');
+      if (t === 0) { out.push(readPoly(r, w, r.r(1) === 1)); continue; }
+      const x = r.r(9), y = r.r(9);
+      if (x > QS || y > QS) throw new Error('range');
+      if (t === 1) { const d = r.r(4), l = r.r(6); if (d > 11 || l < 1) throw new Error('seg'); out.push({ t: 's', w, x, y, d, l }); }
+      else if (t === 2) { const rr = r.r(7), d = r.r(4); if (d > 11 || rr < 1) throw new Error('hex'); out.push({ t: 'h', w, x, y, r: rr, d }); }
+      else throw new Error('type');
+    }
+    return out;
+  }
+  function readStrokesV3(r) {
+    const n = r.r(6);
+    if (n < 1) throw new Error('no strokes');
+    const strokes = [];
+    for (let k = 0; k < n; k++) {
+      const w = r.r(2); if (w > 2) throw new Error('width');
+      const m = r.r(1) === 1, bx = m ? 8 : 9, by = m ? 7 : 9, hx = m ? QX : QR, hy = m ? QY : QR;
+      const np = r.r(7) + 1;
+      let x = r.r(bx), y = r.r(by);
+      if (x > hx || y > hy) throw new Error('range');
+      const q = [[x, y]];
+      for (let i = 1; i < np; i++) {
+        if (r.r(1)) { x += r.r(6) - 32; y += r.r(6) - 32; }
+        else { x = r.r(bx); y = r.r(by); }
+        if (x < 0 || x > hx || y < 0 || y > hy) throw new Error('range');
+        q.push([x, y]);
+      }
+      strokes.push({ w, m, q });
+    }
+    return strokes;
+  }
+  /* 解碼：v4（目前）、v3（手繪自由線條）、v2（只有雪花）、v1（含文字；文字驗證後略過）。回傳的 v 決定繪製方式，舊連結畫面保持原樣。 */
+  function decode(str) {
+    if (typeof str !== 'string' || !str || str.length > 4000) throw new Error('empty');
+    const all = unb64url(str);
+    if (all.length < 6) throw new Error('short');
+    const body = all.subarray(0, all.length - 1);
+    if (crc8(body) !== all[all.length - 1]) throw new Error('checksum');
+    const r = new BitR(body);
+    const ver = r.r(4);
+    let beautify, strokes;
+    if (ver >= 2 && ver <= 4) {
+      beautify = r.r(1);
+      if (r.r(3)) throw new Error('reserved');
+      strokes = ver === 4 ? readStrokesV4(r) : ver === 3 ? readStrokesV3(r) : readStrokesV12(r);
+      r.align();
+    } else if (ver === 1) {
+      beautify = r.r(1);
+      const hasFrom = r.r(1), isPreset = r.r(1);
+      if (r.r(1)) throw new Error('reserved');
+      strokes = readStrokesV12(r);
+      r.align();
+      const getStr = () => { const len = r.byte(); const b = new Uint8Array(len); for (let i = 0; i < len; i++) b[i] = r.byte(); return td.decode(b); };
+      const to = getStr();
+      let msg;
+      if (isPreset) { msg = LEGACY_PRESETS[r.byte()]; if (msg === undefined) throw new Error('preset'); } else msg = getStr();
+      const from = hasFrom ? getStr() : '';
+      if (cpLen(to) > LEGACY_LIMITS.to || cpLen(msg) > LEGACY_LIMITS.msg || cpLen(from) > LEGACY_LIMITS.from) throw new Error('limits');
+    } else throw new Error('version');
+    if (r.pos !== body.length * 8) throw new Error('trailing');
+    return { v: ver, strokes, beautify: !!beautify };
+  }
+
+  return { VERSION, WIDTHS, WIDTHS_LEGACY, MAX_STROKES, MAX_PTS_STROKE, SEG, HALF, CRYSTAL_TYPES,
+    fold, quant, dequant, rdp, smooth, makeStroke, fitStrokes, toFloat, decorate, polyLen, clipWedge,
+    interpret, expandSegs, elemLine, MIN_LEN,
+    randomFlake, mulberry32, encode, decode, crc8 };
+})();
+// ==CORE-END==
+
+/* =====================================================================
+ * 繪製雪花（設計區與卡片共用）
+ * c 已平移到雪花中心；lines 為扇形座標；R 為像素半徑
+ * ===================================================================== */
+function drawFlakeLines(c, lines, R, widthMul) {
+  const groups = new Map();
+  for (const l of lines) { const k = l.lw; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(l); }
+  c.lineCap = 'round'; c.lineJoin = 'round';
+  for (const [lw, group] of groups) {
+    c.lineWidth = Math.max(1, lw * R * (widthMul || 1));
+    c.beginPath();
+    for (let k = 0; k < 6; k++) {
+      const a = k * Core.SEG, ca = Math.cos(a), sa = Math.sin(a);
+      for (const l of group) {
+        for (let m = 1; m >= (l.m ? -1 : 1); m -= 2) {       // 鏡射筆畫 12 份；手繪旋轉筆畫 6 份
+          const pts = l.pts;
+          for (let i = 0; i < pts.length; i++) {
+            const x = pts[i][0] * R, y = pts[i][1] * R * m;
+            const X = x * ca - y * sa, Y = x * sa + y * ca;
+            if (i === 0) c.moveTo(X, Y); else c.lineTo(X, Y);
+            if (pts.length === 1) c.lineTo(X + 0.01, Y);
+          }
+        }
+      }
+    }
+    c.stroke();
+  }
+}
+function iceGradient(c, R) {
+  const g = c.createRadialGradient(0, 0, 0, 0, 0, R);
+  g.addColorStop(0, '#ffffff'); g.addColorStop(0.55, '#f2f8ff'); g.addColorStop(1, '#cfe5ff');
+  return g;
+}
+
+/* =====================================================================
+ * 背景場景（寫實風、全部程式繪製；靜態部分預先畫到離屏 canvas）
+ * ===================================================================== */
+const Scene = (function () {
+  const cv = document.getElementById('scene');
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, dpr = 1, M = 0;
+  let staticCv = null, groundCv = null, sleighFrames = [], dotCv = null, puffCv = null, glintCv = null;
+  const L = {};
+  let snow = [], smoke = [], dust = [], twinkles = [], sparkles = [];
+  let mode = 'designer', acc = 0, raf = 0, lastT = 0, frameNo = 0, running = false, sceneStart = 0;
+  let cardFlake = null;
+  let smokeTimer = 0, dustTimer = 0;
+  let sr = Math.random;                        // 場景用亂數（每次重建用同一種子，畫面一致）
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SLEIGH_FRAMES = 8, GALLOP_HZ = 2.4;
+  const FLAKE_UP = 1.36, FLAKE_DOWN = 1.2;     // 雪花可見範圍（含光暈、開場跳躍最高點），以 R 為單位
+
+  const rnd = (a, b) => a + sr() * (b - a);
+  function mk(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; }
+
+  /* ---------- 版面 ---------- */
+  function layout() {
+    M = Math.min(W, H);
+    L.groundY = H * (H > W ? 0.9 : 0.89);
+    L.moon = { x: W * 0.84, y: Math.max(72, H * 0.155), r: Math.max(18, Math.min(44, M * 0.065)) };
+    L.cw = Math.max(86, Math.min(190, M * 0.3));
+    L.cabinX = W - L.cw * 1.22 - W * 0.03;
+    L.cabinTop = L.groundY + 4 - L.cw * 1.1;
+    L.chimney = { x: L.cabinX + L.cw * 0.715, y: L.groundY + 4 - L.cw * 1.1 };
+    L.window = { x: L.cabinX + L.cw * 0.655, y: L.groundY - L.cw * 0.3 };
+    L.maxAcc = Math.min(H * 0.028, L.cw * 0.13);
+    L.sw = Math.max(110, Math.min(250, M * 0.4));
+    flakeLayout();
+  }
+  /* 雪花放在「標題下緣」與「小木屋／地面」之間，並保證跳躍最高點與光暈都不碰到標題 */
+  function flakeLayout() {
+    const tb = Scene.titleBottom ? Scene.titleBottom(W, H) : H * 0.1;
+    const A = tb + 8;
+    const fit = (B) => Math.max(40, Math.min((B - A) / (FLAKE_UP + FLAKE_DOWN), W * 0.42, 270));
+    let B = L.groundY - L.maxAcc - 12;
+    let R = fit(B);
+    if (W / 2 + R * FLAKE_DOWN > L.cabinX - L.cw * 0.12) { B = L.cabinTop - 10; R = fit(B); }
+    let cy = (A + B) / 2;
+    cy = Math.max(cy, A + FLAKE_UP * R);
+    cy = Math.min(cy, B - FLAKE_DOWN * R);
+    L.cx = W / 2; L.cy = cy; L.R = R; L.titleBottom = tb; L.flakeTop = cy - FLAKE_UP * R; L.flakeBottom = cy + FLAKE_DOWN * R;
+  }
+
+  /* ---------- 工具 ---------- */
+  function roundRect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.lineTo(x + w - r, y); c.quadraticCurveTo(x + w, y, x + w, y + r); c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h); c.lineTo(x + r, y + h); c.quadraticCurveTo(x, y + h, x, y + h - r); c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y); c.closePath(); }
+
+  /* ---------- 靜態層 ---------- */
+  function buildStatic() {
+    sr = Core.mulberry32(20251224);
+    staticCv = mk(W * dpr, H * dpr);
+    const c = staticCv.getContext('2d');
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // 夜空
+    const sky = c.createLinearGradient(0, 0, 0, L.groundY);
+    sky.addColorStop(0, '#01030c'); sky.addColorStop(0.22, '#040b22'); sky.addColorStop(0.5, '#0a1a42');
+    sky.addColorStop(0.75, '#16305c'); sky.addColorStop(0.9, '#2a4573'); sky.addColorStop(1, '#3b5684');
+    c.fillStyle = sky; c.fillRect(0, 0, W, H);
+    // 月光照亮的天空
+    const mo = L.moon;
+    let g = c.createRadialGradient(mo.x, mo.y, 0, mo.x, mo.y, Math.max(W, H) * 0.75);
+    g.addColorStop(0, 'rgba(120,140,190,0.32)'); g.addColorStop(0.3, 'rgba(70,95,150,0.12)'); g.addColorStop(1, 'rgba(40,60,110,0)');
+    c.fillStyle = g; c.fillRect(0, 0, W, H);
+    // 銀河（淡淡的斜帶）
+    milkyWay(c);
+    // 星星
+    const n = Math.max(90, Math.min(360, Math.round(W * H / 2600)));
+    for (let i = 0; i < n; i++) {
+      const x = sr() * W, y = Math.pow(sr(), 1.3) * L.groundY * 0.85;
+      const dm = Math.hypot(x - mo.x, y - mo.y);
+      if (dm < mo.r * 3.2) continue;
+      const big = sr() < 0.07, r = big ? rnd(0.9, 1.5) : rnd(0.3, 0.85);
+      const fade = Math.max(0, 1 - y / (L.groundY * 0.85)) * Math.min(1, dm / (mo.r * 8));
+      c.globalAlpha = rnd(0.35, 1) * (0.25 + 0.75 * fade);
+      const tint = sr();
+      c.fillStyle = tint < 0.15 ? '#ffe3c0' : tint < 0.3 ? '#cfe0ff' : '#ffffff';
+      c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+      if (big) { c.globalAlpha *= 0.25; c.beginPath(); c.arc(x, y, r * 3, 0, Math.PI * 2); c.fill(); }
+    }
+    c.globalAlpha = 1;
+    drawMoon(c, mo.x, mo.y, mo.r);
+    // 地平線霧氣
+    g = c.createLinearGradient(0, L.groundY - H * 0.32, 0, L.groundY);
+    g.addColorStop(0, 'rgba(90,115,165,0)'); g.addColorStop(1, 'rgba(110,135,180,0.28)');
+    c.fillStyle = g; c.fillRect(0, L.groundY - H * 0.32, W, H * 0.32);
+    // 遠山層次（遠→近，越遠越被霧氣吃掉）
+    const gy = L.groundY;
+    mountains(c, { base: gy - H * 0.045, amp: H * (H > W ? 0.17 : 0.2), wl: 230, rough: 0.5, top: '#8a9ec6', bottom: '#40578a', shade: 0.85, fog: 'rgba(70,92,138,', fogA: 0.75 });
+    mountains(c, { base: gy - H * 0.018, amp: H * 0.08, wl: 150, rough: 0.5, top: '#7d93bd', bottom: '#2d4473', shade: 1, fog: 'rgba(60,82,128,', fogA: 0.6 });
+    treeline(c, gy - H * 0.012, Math.round(W / 6), H * 0.018, H * 0.05, '#101d36', 'rgba(64,86,132,0.25)');
+    mountains(c, { base: gy + 6, amp: H * 0.03, wl: 260, rough: 0.3, top: '#a9bbdc', bottom: '#7187b5', shade: 0.6, fog: 'rgba(90,112,160,', fogA: 0.3 });
+    // 前景針葉樹與小木屋
+    const th = L.cw;
+    L.trees = [];
+    const T = (x, h, fog) => { conifer(c, x, gy + 8, h, fog); L.trees.push({ x, h }); };
+    T(W * 0.02, th * 1.15, 0.25);
+    T(W * 0.29, th * 0.8, 0.22);
+    if (W > 700) { T(W * 0.42, th * 0.9, 0.25); T(W * 0.58, th * 0.75, 0.25); T(W * 0.66, th * 1.05, 0.15); }
+    T(W * 0.1, th * 1.62, 0);
+    T(W * 0.21, th * 1.25, 0.05);
+    cabin(c, L.cabinX, gy + 4, L.cw);
+    T(L.cabinX + L.cw * 1.16, th * 0.95, 0.05);
+    vignette(c, W, H, 0);
+    dither(c);
+  }
+  function milkyWay(c) {
+    c.save();
+    const x0 = -W * 0.1, y0 = H * 0.02, x1 = W * 1.1, y1 = L.groundY * 0.55;
+    const ang = Math.atan2(y1 - y0, x1 - x0), len = Math.hypot(x1 - x0, y1 - y0);
+    c.translate(x0, y0); c.rotate(ang);
+    const bw = M * 0.22;
+    for (let i = 0; i < 26; i++) {
+      const u = sr() * len, v = (sr() - 0.5) * bw * 0.8, r = bw * rnd(0.35, 0.8);
+      const g = c.createRadialGradient(u, v, 0, u, v, r);
+      g.addColorStop(0, 'rgba(160,175,220,0.05)'); g.addColorStop(1, 'rgba(160,175,220,0)');
+      c.fillStyle = g; c.fillRect(u - r, v - r, r * 2, r * 2);
+    }
+    c.fillStyle = '#fff';
+    for (let i = 0; i < Math.round(len * 1.1); i++) {
+      const u = sr() * len, v = (sr() + sr() + sr() - 1.5) * bw * 0.5;
+      c.globalAlpha = rnd(0.08, 0.35); c.fillRect(u, v, 0.7, 0.7);
+    }
+    c.restore(); c.globalAlpha = 1;
+  }
+  function drawMoon(c, x, y, r) {
+    // 大氣光暈
+    let g = c.createRadialGradient(x, y, r * 0.9, x, y, r * 9);
+    g.addColorStop(0, 'rgba(225,232,250,0.28)'); g.addColorStop(0.18, 'rgba(190,205,240,0.12)'); g.addColorStop(1, 'rgba(160,180,230,0)');
+    c.fillStyle = g; c.fillRect(x - r * 9, y - r * 9, r * 18, r * 18);
+    g = c.createRadialGradient(x, y, r * 0.95, x, y, r * 1.9);
+    g.addColorStop(0, 'rgba(255,250,235,0.3)'); g.addColorStop(0.35, 'rgba(255,250,235,0.1)'); g.addColorStop(1, 'rgba(255,250,235,0)');
+    c.fillStyle = g; c.beginPath(); c.arc(x, y, r * 1.9, 0, Math.PI * 2); c.fill();
+    c.save();
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.clip();
+    // 月面（邊緣變暗）
+    g = c.createRadialGradient(x - r * 0.15, y - r * 0.15, 0, x, y, r);
+    g.addColorStop(0, '#fffefa'); g.addColorStop(0.6, '#f6f2e6'); g.addColorStop(0.9, '#e6dfcc'); g.addColorStop(1, '#d4ccb6');
+    c.fillStyle = g; c.fillRect(x - r, y - r, r * 2, r * 2);
+    // 月海（柔和不規則暗斑，位置參考真實月球正面）
+    const maria = [[-0.45, 0.05, 0.3, 0.46, 0.2], [-0.2, -0.35, 0.28, 0.23, 0.24], [0.17, -0.33, 0.16, 0.15, 0.26], [0.3, -0.05, 0.21, 0.18, 0.24],
+      [0.63, -0.2, 0.1, 0.12, 0.28], [0.48, 0.22, 0.12, 0.16, 0.2], [-0.18, 0.4, 0.18, 0.13, 0.17], [-0.05, -0.63, 0.42, 0.07, 0.14], [0.05, 0.1, 0.12, 0.1, 0.12]];
+    for (const [dx, dy, rx, ry, a] of maria) {
+      for (let k = 0; k < 3; k++) {
+        c.save(); c.translate(x + (dx + (sr() - 0.5) * 0.08) * r, y + (dy + (sr() - 0.5) * 0.08) * r); c.scale(rx * r * rnd(0.7, 1.1), ry * r * rnd(0.7, 1.1));
+        const mg = c.createRadialGradient(0, 0, 0, 0, 0, 1);
+        mg.addColorStop(0, 'rgba(118,116,124,' + a * 0.65 + ')'); mg.addColorStop(0.6, 'rgba(125,122,130,' + a * 0.4 + ')'); mg.addColorStop(1, 'rgba(130,128,132,0)');
+        c.fillStyle = mg; c.beginPath(); c.arc(0, 0, 1, 0, Math.PI * 2); c.fill(); c.restore();
+      }
+    }
+    // 細微坑洞紋理
+    for (let i = 0; i < Math.round(r * 6); i++) {
+      const a = sr() * Math.PI * 2, d = Math.sqrt(sr()) * r;
+      c.globalAlpha = rnd(0.04, 0.12); c.fillStyle = sr() < 0.5 ? '#7a7570' : '#ffffff';
+      c.beginPath(); c.arc(x + Math.cos(a) * d, y + Math.sin(a) * d, rnd(0.3, 1.1) * r / 30, 0, Math.PI * 2); c.fill();
+    }
+    c.globalAlpha = 1;
+    // 第谷坑與輻射紋
+    const tx = x - r * 0.08, ty = y + r * 0.72;
+    c.strokeStyle = 'rgba(255,255,255,0.08)'; c.lineWidth = Math.max(0.5, r * 0.02);
+    for (let i = 0; i < 9; i++) { const a = sr() * Math.PI * 2; c.beginPath(); c.moveTo(tx, ty); c.lineTo(tx + Math.cos(a) * r * 0.8, ty + Math.sin(a) * r * 0.8); c.stroke(); }
+    c.fillStyle = 'rgba(255,255,255,0.55)'; c.beginPath(); c.arc(tx, ty, r * 0.045, 0, Math.PI * 2); c.fill();
+    // 球體感
+    g = c.createRadialGradient(x - r * 0.35, y - r * 0.35, r * 0.2, x, y, r * 1.05);
+    g.addColorStop(0, 'rgba(255,255,255,0.08)'); g.addColorStop(1, 'rgba(40,40,70,0.22)');
+    c.fillStyle = g; c.fillRect(x - r, y - r, r * 2, r * 2);
+    c.restore();
+  }
+  function mountains(c, o) {
+    // 脊狀多重頻率雜訊（波長以像素計，任何螢幕寬度都有自然尖峰）
+    const tabs = []; for (let i = 0; i < 5; i++) { const t = new Float32Array(256); for (let k = 0; k < 256; k++) t[k] = sr(); tabs.push(t); }
+    const noise = (t, x) => { const i = Math.floor(x), f = x - i, u = f * f * (3 - 2 * f); return t[i & 255] * (1 - u) + t[(i + 1) & 255] * u; };
+    const off = sr() * 100, raw = [];
+    for (let x = 0; x <= W + 2; x += 2) {
+      let v = 0, a = 1, fr = 1 / o.wl, norm = 0;
+      for (let i = 0; i < 5; i++) { const r = 1 - Math.abs(noise(tabs[i], x * fr + off) * 2 - 1); v += a * r * r; norm += a; a *= o.rough; fr *= 2.1; }
+      raw.push(v / norm);
+    }
+    let rmn = Infinity, rmx = -Infinity; for (const v of raw) { rmn = Math.min(rmn, v); rmx = Math.max(rmx, v); }
+    const ys = raw.map(v => o.base - o.amp * (0.08 + 0.92 * (v - rmn) / (rmx - rmn || 1)));
+    for (let pass = 0; pass < 1; pass++) for (let k = 1; k < ys.length - 1; k++) ys[k] = (ys[k - 1] + ys[k] * 2 + ys[k + 1]) / 4;
+    let minY = Infinity; for (const y of ys) minY = Math.min(minY, y);
+    const X = (k) => k * 2;
+    c.save();
+    c.beginPath(); c.moveTo(0, H);
+    ys.forEach((y, k) => c.lineTo(X(k), y));
+    c.lineTo(W + 2, H); c.closePath();
+    let g = c.createLinearGradient(0, minY, 0, o.base);
+    g.addColorStop(0, o.top); g.addColorStop(1, o.bottom);
+    c.fillStyle = g; c.fill();
+    c.clip();
+    // 背光坡面（面向左、遠離月亮）：從山谷沿稜線到山峰，再沿斜下的山脊線回來，形成自然的明暗面
+    const peaks = [];
+    for (let k = 1; k < ys.length - 1; k++) if (ys[k] < ys[k - 1] && ys[k] <= ys[k + 1]) peaks.push(k);
+    for (const kp of peaks) {
+      let kv = kp; while (kv > 0 && ys[kv - 1] >= ys[kv]) kv--;
+      const drop = ys[kv] - ys[kp];
+      if (drop < o.amp * 0.03) continue;
+      const spineX = X(kp) + (X(kp) - X(kv)) * rnd(0.15, 0.45), low = o.base + o.amp * 0.1;
+      c.beginPath(); c.moveTo(X(kv), ys[kv]);
+      for (let k = kv; k <= kp; k++) c.lineTo(X(k), ys[k]);
+      c.quadraticCurveTo((X(kp) + spineX) / 2 + rnd(-4, 4), (ys[kp] + low) / 2, spineX, low);
+      c.lineTo(X(kv) - (X(kp) - X(kv)) * 0.1, low); c.closePath();
+      const sg = c.createLinearGradient(X(kv) - (X(kp) - X(kv)) * 0.1, 0, spineX, 0);
+      const sa = 0.4 * o.shade;
+      sg.addColorStop(0, 'rgba(8,16,44,0)'); sg.addColorStop(0.55, 'rgba(8,16,44,' + sa * 0.7 + ')');
+      sg.addColorStop(0.85, 'rgba(8,16,44,' + sa + ')'); sg.addColorStop(1, 'rgba(8,16,44,' + sa * 0.85 + ')');
+      c.fillStyle = sg; c.fill();
+      // 雪溝（細細的斜線）
+      c.strokeStyle = 'rgba(10,20,50,' + (0.16 * o.shade) + ')'; c.lineWidth = 0.8;
+      for (let n = 0; n < 3; n++) {
+        const k = Math.floor(kp + (sr() * 0.8 + 0.1) * Math.min(40, ys.length - 1 - kp));
+        if (k >= ys.length) continue;
+        const len = rnd(0.2, 0.5) * o.amp;
+        c.beginPath(); c.moveTo(X(k), ys[k] + 2); c.quadraticCurveTo(X(k) - len * 0.15, ys[k] + len * 0.5, X(k) - len * 0.35, ys[k] + len); c.stroke();
+      }
+    }
+    // 迎光稜線的月光邊
+    c.strokeStyle = 'rgba(235,242,255,' + (0.35 * o.shade) + ')'; c.lineWidth = 1.2;
+    c.beginPath();
+    for (let k = 0; k < ys.length - 1; k++) { if (ys[k + 1] > ys[k] + 0.15) { c.moveTo(X(k), ys[k] + 0.6); c.lineTo(X(k + 1), ys[k + 1] + 0.6); } }
+    c.stroke();
+    // 深度霧
+    const fg = c.createLinearGradient(0, o.base - o.amp * 0.7, 0, o.base + 4);
+    fg.addColorStop(0, o.fog + '0)'); fg.addColorStop(1, o.fog + o.fogA + ')');
+    c.fillStyle = fg; c.fillRect(0, o.base - o.amp * 0.7, W, H);
+    c.restore();
+  }
+  function treeline(c, base, count, hmin, hmax, color, fogColor) {
+    c.fillStyle = color;
+    for (let i = 0; i < count; i++) {
+      const x = sr() * W, h = rnd(hmin, hmax), w = h * rnd(0.28, 0.4);
+      c.beginPath(); c.moveTo(x, base - h);
+      const tiers = 5;
+      for (let t = 1; t <= tiers; t++) { const yy = base - h + h * t / tiers * 0.92, ww = w * t / tiers; c.lineTo(x + ww * 0.55, yy - h * 0.06); c.lineTo(x + ww, yy); }
+      c.lineTo(x + w * 0.1, base + 4); c.lineTo(x - w * 0.1, base + 4);
+      for (let t = tiers; t >= 1; t--) { const yy = base - h + h * t / tiers * 0.92, ww = w * t / tiers; c.lineTo(x - ww, yy); c.lineTo(x - ww * 0.55, yy - h * 0.06); }
+      c.closePath(); c.fill();
+    }
+    c.fillStyle = fogColor; c.fillRect(0, base - hmax, W, hmax + 6);
+  }
+  /* 自然的針葉樹：不規則層層下垂的枝條，枝上有積雪；fog 0~1 表示遠近 */
+  function conifer(c, x, base, h, fog) {
+    const mix = (a, b, t) => Math.round(a + (b - a) * t);
+    const fogRGB = [70, 92, 138];
+    const col = (r, g, b, a) => 'rgba(' + mix(r, fogRGB[0], fog) + ',' + mix(g, fogRGB[1], fog) + ',' + mix(b, fogRGB[2], fog) + ',' + (a == null ? 1 : a) + ')';
+    c.fillStyle = col(26, 20, 18); c.fillRect(x - h * 0.016, base - h * 0.16, h * 0.032, h * 0.17);
+    const levels = Math.max(9, Math.min(24, Math.round(8 + h / 10)));
+    const top = base - h;
+    for (let i = levels - 1; i >= 0; i--) {
+      const t = i / (levels - 1);
+      const y = top + h * 0.05 + t * h * 0.8 + rnd(-1, 1) * h * 0.01;
+      const wBase = h * 0.33 * (0.1 + 0.9 * Math.pow(t, 0.85));
+      for (const side of [-1, 1]) {
+        const w = wBase * rnd(0.78, 1.15);
+        const droop = w * rnd(0.22, 0.38);
+        const tipX = x + side * w, tipY = y + droop;
+        const thick = h * rnd(0.05, 0.075) * (0.6 + 0.4 * t);
+        const shade = side > 0 ? 1 : 0.8;
+        // 枝條（底緣鋸齒狀，像針葉簇）
+        c.fillStyle = col(Math.round(12 * shade), Math.round(32 * shade), Math.round(38 * shade));
+        c.beginPath(); c.moveTo(x, y - thick * 0.6);
+        c.quadraticCurveTo(x + side * w * 0.5, y - thick * 0.2, tipX, tipY);
+        const teeth = 4 + Math.floor(w / 8);
+        for (let k = 1; k <= teeth; k++) {
+          const u = 1 - k / teeth;
+          const px = x + side * w * u, py = y + droop * u * u + thick * (0.55 + 0.25 * sr());
+          c.lineTo(px + side * w * 0.04, py - thick * 0.35); c.lineTo(px, py);
+        }
+        c.lineTo(x, y + thick * 0.6); c.closePath(); c.fill();
+        // 枝上積雪
+        const sn = sr();
+        if (sn < 0.88) {
+          const len = rnd(0.45, 0.92), st = rnd(0.05, 0.2);
+          const sx0 = x + side * w * st, sy0 = y - thick * 0.55 + droop * st * st;
+          const sx1 = x + side * w * len, sy1 = y + droop * len * len - thick * 0.35;
+          const sth = thick * rnd(0.35, 0.6);
+          c.fillStyle = side > 0 ? col(236, 243, 253) : col(196, 210, 234);
+          c.beginPath(); c.moveTo(sx0, sy0);
+          c.quadraticCurveTo((sx0 + sx1) / 2, (sy0 + sy1) / 2 - sth * 1.3, sx1, sy1);
+          c.quadraticCurveTo((sx0 + sx1) / 2, (sy0 + sy1) / 2 + sth * 0.4, sx0, sy0 + sth * 0.5);
+          c.closePath(); c.fill();
+        }
+      }
+    }
+    // 樹梢
+    c.fillStyle = col(12, 30, 36);
+    c.beginPath(); c.moveTo(x, top - h * 0.02); c.lineTo(x + h * 0.03, top + h * 0.1); c.lineTo(x - h * 0.03, top + h * 0.1); c.closePath(); c.fill();
+    c.fillStyle = col(232, 240, 252);
+    c.beginPath(); c.moveTo(x, top - h * 0.015); c.quadraticCurveTo(x + h * 0.025, top + h * 0.04, x + h * 0.012, top + h * 0.05); c.quadraticCurveTo(x - h * 0.01, top + h * 0.035, x - h * 0.014, top + h * 0.045); c.closePath(); c.fill();
+  }
+  function snowBlob(c, x, y, w, h) {
+    const g = c.createLinearGradient(0, y, 0, y + h);
+    g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#bfcfea');
+    c.fillStyle = g;
+    c.beginPath(); c.moveTo(x, y + h * 0.75);
+    c.quadraticCurveTo(x + w * 0.05, y - h * 0.1, x + w * 0.35, y + h * 0.05);
+    c.quadraticCurveTo(x + w * 0.6, y - h * 0.25, x + w * 0.85, y + h * 0.1);
+    c.quadraticCurveTo(x + w * 1.02, y + h * 0.3, x + w, y + h * 0.8);
+    c.quadraticCurveTo(x + w * 0.5, y + h * 1.15, x, y + h * 0.75);
+    c.closePath(); c.fill();
+  }
+  /* 寫實小木屋（單位座標：寬約 1，底部 y=0） */
+  function cabin(c, x, base, s) {
+    c.save(); c.translate(x, base); c.scale(s, s);
+    // 石砌煙囪
+    const chx = 0.64, chw = 0.15, chTop = -1.08, chBot = -0.66;
+    c.save(); c.beginPath(); c.rect(chx, chTop, chw, chBot - chTop); c.clip();
+    c.fillStyle = '#2a292f'; c.fillRect(chx, chTop, chw, chBot - chTop);
+    for (let y = chTop, row = 0; y < chBot; y += 0.04, row++) {
+      let xx = chx - (row % 2) * 0.02 - sr() * 0.01;
+      while (xx < chx + chw) {
+        const sw = 0.03 + sr() * 0.028, gv = Math.round(88 + sr() * 45);
+        c.fillStyle = 'rgb(' + gv + ',' + (gv - 3) + ',' + (gv + 6) + ')';
+        roundRect(c, xx + 0.003, y + 0.003, sw - 0.006, 0.034, 0.009); c.fill();
+        c.fillStyle = 'rgba(255,255,255,0.13)'; c.fillRect(xx + 0.006, y + 0.006, sw - 0.014, 0.005);
+        xx += sw;
+      }
+    }
+    let g = c.createLinearGradient(chx, 0, chx + chw, 0);
+    g.addColorStop(0, 'rgba(0,0,20,0.45)'); g.addColorStop(1, 'rgba(170,190,240,0.1)');
+    c.fillStyle = g; c.fillRect(chx, chTop, chw, chBot - chTop);
+    c.restore();
+    snowBlob(c, chx - 0.025, chTop - 0.04, chw + 0.05, 0.06);
+    // 原木牆（含山牆）
+    c.save();
+    c.beginPath(); c.moveTo(0.08, 0); c.lineTo(0.08, -0.56); c.lineTo(0.5, -0.9); c.lineTo(0.92, -0.56); c.lineTo(0.92, 0); c.closePath(); c.clip();
+    const lh = 0.068;
+    for (let y = 0; y > -0.95; y -= lh) {
+      g = c.createLinearGradient(0, y - lh, 0, y);
+      g.addColorStop(0, '#3e271c'); g.addColorStop(0.28, '#7b5339'); g.addColorStop(0.6, '#5b3a27'); g.addColorStop(1, '#1f140e');
+      c.fillStyle = g; c.fillRect(0, y - lh, 1, lh);
+      c.strokeStyle = 'rgba(25,12,6,0.4)'; c.lineWidth = 0.004;
+      for (let k = 0; k < 4; k++) { const yy = y - lh * rnd(0.25, 0.7), x0 = rnd(0.08, 0.5); c.beginPath(); c.moveTo(x0, yy); c.lineTo(x0 + rnd(0.1, 0.4), yy + rnd(-0.003, 0.003)); c.stroke(); }
+    }
+    g = c.createLinearGradient(0.08, 0, 0.92, 0);
+    g.addColorStop(0, 'rgba(0,0,25,0.4)'); g.addColorStop(1, 'rgba(140,170,230,0.12)');
+    c.fillStyle = g; c.fillRect(0, -1, 1, 1);
+    c.strokeStyle = 'rgba(0,0,12,0.5)'; c.lineWidth = 0.14;
+    c.beginPath(); c.moveTo(0.02, -0.52); c.lineTo(0.5, -0.92); c.lineTo(0.98, -0.52); c.stroke();
+    c.restore();
+    // 轉角的原木端面
+    for (let y = -lh / 2; y > -0.56; y -= lh) {
+      for (const ex of [0.075, 0.925]) {
+        const rg = c.createRadialGradient(ex - 0.006, y - 0.006, 0.002, ex, y, lh * 0.55);
+        rg.addColorStop(0, '#b38c64'); rg.addColorStop(0.55, '#7d5a3c'); rg.addColorStop(1, '#2a1a11');
+        c.fillStyle = rg; c.beginPath(); c.ellipse(ex, y, lh * 0.4, lh * 0.48, 0, 0, Math.PI * 2); c.fill();
+        c.strokeStyle = 'rgba(60,35,20,0.5)'; c.lineWidth = 0.003; c.beginPath(); c.arc(ex, y, lh * 0.2, 0, Math.PI * 2); c.stroke();
+      }
+    }
+    // 木門
+    const dx = 0.17, dw = 0.19, dh = 0.38;
+    c.fillStyle = '#1a110c'; c.fillRect(dx - 0.016, -dh - 0.016, dw + 0.032, dh + 0.016);
+    for (let i = 0; i < 4; i++) {
+      g = c.createLinearGradient(dx + i * dw / 4, 0, dx + (i + 1) * dw / 4, 0);
+      g.addColorStop(0, '#3b2416'); g.addColorStop(0.5, '#56351f'); g.addColorStop(1, '#2e1c11');
+      c.fillStyle = g; c.fillRect(dx + i * dw / 4 + 0.002, -dh, dw / 4 - 0.004, dh);
+    }
+    c.strokeStyle = '#24160d'; c.lineWidth = 0.022;
+    c.beginPath(); c.moveTo(dx, -dh * 0.78); c.lineTo(dx + dw, -dh * 0.78); c.moveTo(dx, -dh * 0.22); c.lineTo(dx + dw, -dh * 0.22); c.moveTo(dx + 0.01, -dh * 0.24); c.lineTo(dx + dw - 0.01, -dh * 0.76); c.stroke();
+    c.fillStyle = '#e8b968'; c.beginPath(); c.arc(dx + dw * 0.82, -dh * 0.48, 0.011, 0, Math.PI * 2); c.fill();
+    g = c.createLinearGradient(dx, 0, dx + dw, 0); g.addColorStop(0, 'rgba(0,0,20,0.35)'); g.addColorStop(1, 'rgba(0,0,20,0)');
+    c.fillStyle = g; c.fillRect(dx, -dh, dw, dh);
+    // 窗戶（暖光）
+    const wx = 0.52, wy = -0.44, ww = 0.27, wh = 0.24;
+    c.save(); c.globalCompositeOperation = 'lighter';
+    g = c.createRadialGradient(wx + ww / 2, wy + wh / 2, 0.02, wx + ww / 2, wy + wh / 2, 0.42);
+    g.addColorStop(0, 'rgba(255,170,70,0.4)'); g.addColorStop(1, 'rgba(255,150,60,0)');
+    c.fillStyle = g; c.fillRect(wx - 0.3, wy - 0.3, ww + 0.6, wh + 0.6);
+    c.restore();
+    c.fillStyle = '#24160e'; c.fillRect(wx - 0.022, wy - 0.022, ww + 0.044, wh + 0.044);
+    g = c.createRadialGradient(wx + ww * 0.45, wy + wh * 0.55, 0.01, wx + ww / 2, wy + wh / 2, ww * 0.75);
+    g.addColorStop(0, '#fff3c8'); g.addColorStop(0.45, '#ffc565'); g.addColorStop(1, '#d96f22');
+    c.fillStyle = g; c.fillRect(wx, wy, ww, wh);
+    c.fillStyle = 'rgba(140,45,15,0.35)';
+    c.beginPath(); c.moveTo(wx, wy); c.lineTo(wx + ww * 0.18, wy); c.quadraticCurveTo(wx + ww * 0.08, wy + wh * 0.5, wx + ww * 0.14, wy + wh); c.lineTo(wx, wy + wh); c.fill();
+    c.beginPath(); c.moveTo(wx + ww, wy); c.lineTo(wx + ww * 0.82, wy); c.quadraticCurveTo(wx + ww * 0.92, wy + wh * 0.5, wx + ww * 0.86, wy + wh); c.lineTo(wx + ww, wy + wh); c.fill();
+    c.strokeStyle = '#24160e'; c.lineWidth = 0.018;
+    c.beginPath(); c.moveTo(wx + ww / 2, wy); c.lineTo(wx + ww / 2, wy + wh); c.moveTo(wx, wy + wh / 2); c.lineTo(wx + ww, wy + wh / 2); c.stroke();
+    snowBlob(c, wx - 0.045, wy + wh + 0.005, ww + 0.09, 0.045);
+    // 屋頂封簷板
+    c.strokeStyle = '#1b120e'; c.lineWidth = 0.05; c.lineCap = 'butt';
+    c.beginPath(); c.moveTo(-0.04, -0.52); c.lineTo(0.5, -0.94); c.lineTo(1.04, -0.52); c.stroke();
+    // 屋頂厚積雪（柔軟邊緣、出簷、冰柱）
+    const P = [0.5, -0.97], EL = [-0.1, -0.5], ER = [1.1, -0.5];
+    const top = [], bot = [];
+    const lump = (u, k) => Math.sin(u * 17 + k) * 0.006 + Math.sin(u * 41 + k * 2) * 0.003;
+    for (let i = 0; i <= 24; i++) { const u = i / 24; top.push([EL[0] + (P[0] - EL[0]) * u, EL[1] + (P[1] - EL[1]) * u - 0.03 - lump(u, 1)]); }
+    for (let i = 1; i <= 24; i++) { const u = i / 24; top.push([P[0] + (ER[0] - P[0]) * u, P[1] + (ER[1] - P[1]) * u - 0.03 - lump(u, 3)]); }
+    for (let i = 24; i >= 0; i--) { const u = i / 24; bot.push([P[0] + (ER[0] - P[0]) * u, P[1] + (ER[1] - P[1]) * u + 0.045 + Math.max(0, lump(u, 5)) * 2.5]); }
+    for (let i = 23; i >= 1; i--) { const u = i / 24; bot.push([EL[0] + (P[0] - EL[0]) * u, EL[1] + (P[1] - EL[1]) * u + 0.045 + Math.max(0, lump(u, 7)) * 2.5]); }
+    c.save();
+    c.shadowColor = 'rgba(0,0,20,0.55)'; c.shadowBlur = 0.035 * s * dpr; c.shadowOffsetY = 0.012 * s * dpr;
+    g = c.createLinearGradient(0, -1.02, 0, -0.42);
+    g.addColorStop(0, '#ffffff'); g.addColorStop(0.7, '#e9f0fb'); g.addColorStop(1, '#bccde8');
+    c.fillStyle = g;
+    c.beginPath(); c.moveTo(top[0][0], top[0][1]);
+    for (const p of top) c.lineTo(p[0], p[1]);
+    c.quadraticCurveTo(ER[0] + 0.03, ER[1] + 0.02, ER[0] - 0.01, ER[1] + 0.06);
+    for (const p of bot) c.lineTo(p[0], p[1]);
+    c.quadraticCurveTo(EL[0] - 0.03, EL[1] + 0.06, top[0][0], top[0][1]);
+    c.closePath(); c.fill();
+    c.restore();
+    // 左坡背光
+    c.fillStyle = 'rgba(70,100,170,0.18)';
+    c.beginPath(); c.moveTo(top[0][0], top[0][1]); for (let i = 0; i <= 24; i++) c.lineTo(top[i][0], top[i][1]);
+    c.lineTo(P[0], P[1] + 0.05); for (let i = 26; i < bot.length; i++) c.lineTo(bot[i][0], bot[i][1]); c.closePath(); c.fill();
+    // 冰柱
+    c.fillStyle = 'rgba(225,238,255,0.85)';
+    for (let i = 0; i < 7; i++) {
+      const u = 0.55 + i * 0.065 + sr() * 0.02, px = P[0] + (ER[0] - P[0]) * u, py = P[1] + (ER[1] - P[1]) * u + 0.05, len = rnd(0.025, 0.07);
+      c.beginPath(); c.moveTo(px - 0.008, py); c.lineTo(px + 0.008, py); c.lineTo(px, py + len); c.closePath(); c.fill();
+    }
+    c.restore();
+  }
+  function vignette(c, w, h, yOff) {
+    const g = c.createRadialGradient(w / 2, h * 0.42 - yOff, Math.min(w, h) * 0.35, w / 2, h * 0.42 - yOff, Math.hypot(w, h) * 0.62);
+    g.addColorStop(0, 'rgba(0,0,12,0)'); g.addColorStop(1, 'rgba(0,0,12,0.42)');
+    c.fillStyle = g; c.fillRect(0, -yOff, w, h);
+  }
+  function dither(c) {                         // 加入細微雜訊，避免漸層色帶、增加質感
+    try {
+      const w = c.canvas.width, h = c.canvas.height, img = c.getImageData(0, 0, w, h), d = img.data;
+      let seed = 12345;
+      for (let i = 0; i < d.length; i += 4) { seed = (seed * 1103515245 + 12345) & 0x7fffffff; const n = ((seed >> 16) & 7) - 3.5; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+      c.putImageData(img, 0, 0);
+    } catch (e) { /* ignore */ }
+  }
+  /* 地面雪的質感層（每幀用地面輪廓裁切後貼上） */
+  function buildGround() {
+    const top = L.groundY - L.maxAcc - 24;
+    L.gTop = top;
+    const gh = H - top;
+    groundCv = mk(W * dpr, gh * dpr);
+    const c = groundCv.getContext('2d');
+    c.setTransform(dpr, 0, 0, dpr, 0, -top * dpr);
+    let g = c.createLinearGradient(0, top, 0, H);
+    g.addColorStop(0, '#f1f5fc'); g.addColorStop(0.3, '#d6e0f1'); g.addColorStop(1, '#8aa0c9');
+    c.fillStyle = g; c.fillRect(0, top, W, gh);
+    // 月光照到的區域
+    g = c.createRadialGradient(L.moon.x, L.groundY, 0, L.moon.x, L.groundY, W * 0.7);
+    g.addColorStop(0, 'rgba(255,255,255,0.22)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    c.fillStyle = g; c.fillRect(0, top, W, gh);
+    // 雪丘起伏
+    for (let i = 0; i < 16; i++) {
+      const x = sr() * W, y = L.groundY + sr() * gh * 0.8, rx = W * rnd(0.12, 0.35), ry = gh * rnd(0.05, 0.14);
+      c.save(); c.translate(x, y); c.scale(rx, ry);
+      g = c.createRadialGradient(0.25, 0.3, 0, 0, 0, 1);
+      g.addColorStop(0, 'rgba(60,85,145,0.2)'); g.addColorStop(1, 'rgba(60,85,145,0)');
+      c.fillStyle = g; c.beginPath(); c.arc(0, 0, 1, 0, Math.PI * 2); c.fill();
+      g = c.createRadialGradient(-0.3, -0.5, 0, -0.3, -0.5, 0.8);
+      g.addColorStop(0, 'rgba(255,255,255,0.22)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+      c.fillStyle = g; c.beginPath(); c.arc(-0.3, -0.5, 0.8, 0, Math.PI * 2); c.fill();
+      c.restore();
+    }
+    // 月光投影（月亮在右，影子往左）
+    const shadow = (x, w, len) => {
+      c.save(); c.translate(x - len * 0.45, L.groundY + 6); c.scale(len * 0.55, Math.max(4, w * 0.1));
+      const sg = c.createRadialGradient(0, 0, 0, 0, 0, 1);
+      sg.addColorStop(0, 'rgba(35,55,115,0.34)'); sg.addColorStop(1, 'rgba(35,55,115,0)');
+      c.fillStyle = sg; c.beginPath(); c.arc(0, 0, 1, 0, Math.PI * 2); c.fill(); c.restore();
+    };
+    for (const t of L.trees) shadow(t.x, t.h * 0.6, t.h * 0.8);
+    shadow(L.cabinX + L.cw * 0.4, L.cw * 1.2, L.cw * 1.3);
+    // 細雪顆粒
+    for (let i = 0; i < Math.round(W * gh / 160); i++) {
+      c.globalAlpha = rnd(0.05, 0.18); c.fillStyle = sr() < 0.6 ? '#ffffff' : '#7f95c2';
+      c.fillRect(sr() * W, top + sr() * gh, rnd(0.6, 1.4), rnd(0.6, 1.2));
+    }
+    c.globalAlpha = 1;
+    vignette(c, W, H, 0);
+    sparkles = [];
+    for (let i = 0; i < Math.round(Math.min(70, W / 6)); i++) sparkles.push({ x: sr() * W, dy: 3 + Math.pow(sr(), 1.5) * (H - L.groundY), ph: sr() * 6.28, sp: rnd(0.6, 1.6), s: rnd(3, 7) });
+  }
+
+  /* ---------- 雪橇剪影（原創簡筆；麋鹿腿部奔跑動畫） ---------- */
+  function deerBob(p) { return -1.4 * Math.sin(p + 0.6); }
+  function sleighShape(c, phase) {
+    c.lineCap = 'round'; c.lineJoin = 'round';
+    c.lineWidth = 2.6; c.beginPath(); c.moveTo(0, 57); c.lineTo(60, 57); c.quadraticCurveTo(77, 57, 76, 46); c.quadraticCurveTo(75, 40, 69, 42); c.stroke();
+    c.lineWidth = 2.2; c.beginPath(); c.moveTo(14, 49); c.lineTo(14, 57); c.moveTo(46, 49); c.lineTo(46, 57); c.stroke();
+    c.beginPath(); c.moveTo(3, 24); c.quadraticCurveTo(1, 40, 8, 50); c.lineTo(54, 50); c.quadraticCurveTo(66, 49, 69, 38); c.quadraticCurveTo(71, 30, 64, 31);
+    c.quadraticCurveTo(52, 33, 44, 34); c.lineTo(30, 34); c.lineTo(27, 26); c.quadraticCurveTo(14, 18, 3, 24); c.closePath(); c.fill();
+    c.beginPath(); c.ellipse(13, 21, 9, 11, -0.2, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.moveTo(8, 12); c.lineTo(12, 6); c.lineTo(17, 11); c.closePath(); c.fill();
+    c.beginPath(); c.ellipse(31, 24, 9, 11, 0.15, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(35, 10, 5.2, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.ellipse(38.5, 14, 3.6, 5, 0.3, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.moveTo(29.5, 8.5); c.lineTo(40.5, 7); c.quadraticCurveTo(36, -1, 26, 3); c.closePath(); c.fill();
+    c.beginPath(); c.arc(25.5, 3.8, 2.3, 0, Math.PI * 2); c.fill();
+    c.lineWidth = 3.4; c.beginPath(); c.moveTo(35, 21); c.lineTo(48, 18.5); c.stroke();
+    const p1 = phase, p2 = phase + 1.9;
+    const b1 = deerBob(p1), b2 = deerBob(p2);
+    c.lineWidth = 0.9; c.beginPath(); c.moveTo(48, 18.5); c.quadraticCurveTo(80, 30 + b1, 126, 31 + b1); c.moveTo(126, 31 + b1); c.quadraticCurveTo(152, 28 + b2, 178, 25 + b2); c.stroke();
+    deer(c, 92, 10, p1); deer(c, 146, 4, p2);
+  }
+  function leg(c, hx, hy, ang, bend, l1, l2) {
+    const kx = hx + Math.sin(ang) * l1, ky = hy + Math.cos(ang) * l1;
+    const fx = kx + Math.sin(ang + bend) * l2, fy = ky + Math.cos(ang + bend) * l2;
+    c.moveTo(hx, hy); c.lineTo(kx, ky); c.lineTo(fx, fy);
+  }
+  function deer(c, x, y, p) {
+    const bob = deerBob(p), pitch = 0.05 * Math.sin(p);
+    // 腿（奔跑週期：前後腿交替擺動）
+    c.lineWidth = 2.3; c.beginPath();
+    const front = (q) => leg(c, x + 30, y + 32 + bob, 0.25 + 0.8 * Math.sin(q), -0.2 - 1.2 * Math.max(0, Math.cos(q)), 7, 7.5);
+    const hind = (q) => leg(c, x + 11, y + 32 + bob, -0.15 + 0.75 * Math.sin(q + Math.PI), 0.35 + 0.9 * Math.max(0, Math.cos(q + Math.PI)), 7, 7.5);
+    front(p); front(p - 0.55); hind(p); hind(p - 0.55);
+    c.stroke();
+    c.save(); c.translate(x + 20, y + 30 + bob); c.rotate(pitch); c.translate(-(x + 20), -(y + 30));
+    c.beginPath(); c.ellipse(x + 20, y + 30, 15, 6.6, -0.08, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.moveTo(x + 29, y + 27); c.lineTo(x + 37, y + 13); c.lineTo(x + 43, y + 15); c.lineTo(x + 36, y + 31); c.closePath(); c.fill();
+    c.beginPath(); c.ellipse(x + 43.5, y + 13.5, 6.2, 3.4, 0.35, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.moveTo(x + 39, y + 10.5); c.lineTo(x + 34.5, y + 7.5); c.lineTo(x + 40, y + 8.5); c.closePath(); c.fill();
+    c.lineWidth = 1.5; c.beginPath();
+    c.moveTo(x + 40, y + 10); c.lineTo(x + 37, y + 1); c.moveTo(x + 38.6, y + 5.5); c.lineTo(x + 33, y + 3.5); c.moveTo(x + 37.7, y + 2.8); c.lineTo(x + 40.5, y - 1.5);
+    c.moveTo(x + 42, y + 10); c.lineTo(x + 44.5, y + 1.5); c.moveTo(x + 43.4, y + 5.5); c.lineTo(x + 47.5, y + 3);
+    c.stroke();
+    c.beginPath(); c.moveTo(x + 6, y + 27); c.lineTo(x + 0.5, y + 23.5 - Math.sin(p) * 1.5); c.lineTo(x + 5, y + 30.5); c.closePath(); c.fill();
+    c.restore();
+  }
+  function buildSprites() {
+    const s = L.sw / 200, pad = 14;
+    sleighFrames = [];
+    for (let f = 0; f < SLEIGH_FRAMES; f++) {
+      const phase = f / SLEIGH_FRAMES * Math.PI * 2;
+      const cvs = mk((206 + pad * 2) * s * dpr, (74 + pad * 2) * s * dpr);
+      const c = cvs.getContext('2d');
+      c.setTransform(s * dpr, 0, 0, s * dpr, (pad + 6) * s * dpr, (pad + 8) * s * dpr);
+      c.fillStyle = c.strokeStyle = '#ffffff';
+      c.shadowColor = 'rgba(190,215,255,0.75)'; c.shadowBlur = 12 * s * dpr; sleighShape(c, phase);
+      c.shadowColor = 'rgba(6,14,40,0.9)'; c.shadowBlur = 2.5 * s * dpr; sleighShape(c, phase);
+      c.shadowColor = 'transparent'; c.shadowBlur = 0; sleighShape(c, phase);
+      sleighFrames.push(cvs);
+    }
+    // 柔光點（飄雪）
+    dotCv = mk(32, 32);
+    let d = dotCv.getContext('2d'), dg = d.createRadialGradient(16, 16, 0, 16, 16, 16);
+    dg.addColorStop(0, 'rgba(255,255,255,1)'); dg.addColorStop(0.45, 'rgba(255,255,255,0.75)'); dg.addColorStop(1, 'rgba(255,255,255,0)');
+    d.fillStyle = dg; d.fillRect(0, 0, 32, 32);
+    // 煙霧團（不規則、帶月光色調）
+    puffCv = mk(96, 96);
+    d = puffCv.getContext('2d');
+    for (let i = 0; i < 7; i++) {
+      const px = 48 + (Math.random() - 0.5) * 30, py = 48 + (Math.random() - 0.5) * 30, pr = 18 + Math.random() * 16;
+      dg = d.createRadialGradient(px, py, 0, px, py, pr);
+      dg.addColorStop(0, 'rgba(210,218,235,0.32)'); dg.addColorStop(1, 'rgba(200,210,230,0)');
+      d.fillStyle = dg; d.fillRect(0, 0, 96, 96);
+    }
+    // 星芒
+    glintCv = mk(64, 64);
+    const gc = glintCv.getContext('2d');
+    const gg = gc.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gg.addColorStop(0, 'rgba(255,255,255,1)'); gg.addColorStop(0.15, 'rgba(220,240,255,0.8)'); gg.addColorStop(1, 'rgba(200,230,255,0)');
+    gc.fillStyle = gg;
+    gc.beginPath(); gc.moveTo(32, 0); gc.quadraticCurveTo(35, 29, 64, 32); gc.quadraticCurveTo(35, 35, 32, 64); gc.quadraticCurveTo(29, 35, 0, 32); gc.quadraticCurveTo(29, 29, 32, 0); gc.fill();
+    gc.beginPath(); gc.arc(32, 32, 7, 0, Math.PI * 2); gc.fill();
+  }
+
+  /* ---------- 粒子 ---------- */
+  function initParticles() {
+    const n = Math.round(Math.max(40, Math.min(reduceMotion ? 40 : 110, W * H / 8000)));
+    snow = [];
+    for (let i = 0; i < n; i++) snow.push(newFlake(true));
+    for (let i = 0; i < 5; i++) { const f = newFlake(true); f.r = 4 + Math.random() * 3; f.a = 0.22; f.vy = 1.1 + Math.random() * 0.5; snow.push(f); }   // 近景散景雪
+    twinkles = [];
+    for (let i = 0; i < 24; i++) {
+      let x, y, tries = 0;
+      do { x = Math.random() * W; y = Math.random() * L.groundY * 0.5; tries++; } while (tries < 10 && Math.hypot(x - L.moon.x, y - L.moon.y) < L.moon.r * 4);
+      twinkles.push({ x, y, r: 0.6 + Math.random() * 1.1, ph: Math.random() * 6.28, sp: 0.8 + Math.random() * 1.6 });
+    }
+    smoke = []; dust = [];
+  }
+  function newFlake(anywhere) {
+    const r = Math.random() < 0.75 ? 0.8 + Math.random() : 1.8 + Math.random() * 1.2;
+    return { x: Math.random() * W, y: anywhere ? Math.random() * H : -4 - Math.random() * 16, r, vy: 0.25 + r * 0.28, ph: Math.random() * 6.28, f: 0.4 + Math.random() * 0.8, bx: 0, by: 0, a: 0.55 + Math.random() * 0.4 };
+  }
+  function groundTop(x) { return L.groundY - acc - 5 * Math.sin(x * 0.011 + 1.3) - 3.5 * Math.sin(x * 0.029 + 0.4); }
+
+  function blow(x, y, dx, dy) {
+    if (mode !== 'card') return;
+    const sp = Math.hypot(dx, dy);
+    if (sp < 0.5) return;
+    const R = 95, k = Math.min(3.2, sp * 0.09);
+    for (const p of snow) {
+      const ex = p.x - x, ey = p.y - y, d = Math.hypot(ex, ey);
+      if (d < R) {
+        const fall = 1 - d / R;
+        p.bx += (dx / sp * k * 2.2 + ex / (d + 1) * k * 0.9) * fall;
+        p.by += (dy / sp * k * 2.2 + ey / (d + 1) * k * 0.9) * fall;
+        const m = 14; p.bx = Math.max(-m, Math.min(m, p.bx)); p.by = Math.max(-m, Math.min(m, p.by));
+      }
+    }
+  }
+
+  /* ---------- 卡片大雪花 ---------- */
+  function setCard(card) {
+    const fl = Core.toFloat(card.strokes, card.v);
+    const geo = Core.decorate(fl, card.beautify, card.v);
+    cardFlake = { card, geo, start: performance.now() / 1000 + 0.1 };
+    buildFlakeSprite();
+  }
+  function buildFlakeSprite() {
+    if (!cardFlake) return;
+    const R = L.R, size = Math.ceil(R * 2.5), px = Math.ceil(size * dpr);
+    const lines = cardFlake.geo.lines, b = cardFlake.card.beautify;
+    const glow = mk(px, px), gc = glow.getContext('2d');
+    gc.setTransform(dpr, 0, 0, dpr, px / 2, px / 2);
+    gc.strokeStyle = 'rgba(165,210,255,0.95)'; gc.shadowColor = 'rgba(120,180,255,1)';
+    gc.shadowBlur = R * (b ? 0.12 : 0.08) * dpr;
+    drawFlakeLines(gc, lines, R, b ? 1.9 : 1.5);
+    if (b) drawFlakeLines(gc, lines, R, 1.2);
+    const spr = mk(px, px), sc = spr.getContext('2d');
+    sc.setTransform(dpr, 0, 0, dpr, px / 2, px / 2);
+    sc.strokeStyle = iceGradient(sc, R); sc.shadowColor = 'rgba(150,200,255,0.9)'; sc.shadowBlur = R * 0.03 * dpr;
+    drawFlakeLines(sc, lines, R, 1);
+    sc.shadowBlur = 0; sc.strokeStyle = '#ffffff';
+    drawFlakeLines(sc, lines, R, 0.4);
+    const pts = [];
+    for (const tp of cardFlake.geo.tips) {
+      const t = tp.p;
+      if (Math.hypot(t[0], t[1]) < 0.12) continue;
+      for (let k = 0; k < 6; k++) for (let m = 1; m >= (tp.m ? -1 : 1); m -= 2) {
+        const a = k * Core.SEG, x = t[0] * R, y = t[1] * R * m;
+        pts.push([x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)]);
+      }
+    }
+    const tips = [];
+    const step = Math.max(1, Math.floor(pts.length / 60));
+    for (let i = 0; i < pts.length; i += step) tips.push({ x: pts[i][0], y: pts[i][1], ph: Math.random() * 6.28, sp: 1.2 + Math.random() * 1.4 });
+    Object.assign(cardFlake, { glow, sprite: spr, size, tips, R });
+  }
+  function ease(u) { return u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; }
+  const J0 = 0.1, J1 = 1.5, JUMP = 0.26;
+  function flakeState(e) {
+    let y = 0, rot = 0, sc = 1, alpha = 1;
+    if (e < J0) { alpha = Math.max(0, e / J0); sc = 0.78; }
+    else if (e < J1) { const u = (e - J0) / (J1 - J0); y = -L.R * JUMP * Math.sin(Math.PI * u); rot = Math.PI * 2 * ease(u); sc = 0.78 + 0.22 * u + 0.05 * Math.sin(Math.PI * u); }
+    else { const v = e - J1; rot = Math.PI * 2 + v * 0.13; if (v < 0.5) sc = 1 - 0.05 * Math.sin(Math.PI * v / 0.5) * (1 - v); }
+    return { y, rot, sc, alpha };
+  }
+  function drawCardFlake(t) {
+    const f = cardFlake; if (!f || !f.sprite) return;
+    const e = freezeE != null ? freezeE : t - f.start, R = f.R;
+    if (e < 0) return;
+    const st = flakeState(e);
+    const cx = L.cx, cy = L.cy + st.y, S = f.size;
+    ctx.save();
+    ctx.globalAlpha = st.alpha;
+    const pulse = 0.5 + 0.5 * Math.sin(t * 1.5);
+    const hal = ctx.createRadialGradient(cx, cy, R * 0.1, cx, cy, R * 1.2);
+    hal.addColorStop(0, 'rgba(150,200,255,' + (0.18 + 0.08 * pulse) + ')'); hal.addColorStop(1, 'rgba(150,200,255,0)');
+    ctx.fillStyle = hal; ctx.fillRect(cx - R * 1.2, cy - R * 1.2, R * 2.4, R * 2.4);
+    if (e > J1 && e < J1 + 1) {
+      const v = e - J1;
+      ctx.strokeStyle = 'rgba(200,230,255,' + (0.5 * (1 - v)) + ')'; ctx.lineWidth = 2 + 4 * (1 - v);
+      ctx.beginPath(); ctx.arc(cx, cy, R * (0.95 + 0.25 * v), 0, Math.PI * 2); ctx.stroke();
+    }
+    ctx.translate(cx, cy); ctx.rotate(st.rot); ctx.scale(st.sc, st.sc);
+    ctx.globalAlpha = st.alpha * (0.55 + 0.4 * pulse);
+    ctx.drawImage(f.glow, -S / 2, -S / 2, S, S);
+    ctx.globalAlpha = st.alpha;
+    ctx.drawImage(f.sprite, -S / 2, -S / 2, S, S);
+    if (e > J1 * 0.7) {
+      ctx.globalCompositeOperation = 'lighter';
+      const gs = R * 0.13;
+      for (const p of f.tips) {
+        const a = Math.sin(t * p.sp + p.ph);
+        if (a > 0.55) { const k = (a - 0.55) / 0.45; ctx.globalAlpha = k * st.alpha; const z = gs * (0.5 + k * 0.7); ctx.drawImage(glintCv, p.x - z / 2, p.y - z / 2, z, z); }
+      }
+    }
+    ctx.restore();
+  }
+
+  /* ---------- 每一幀 ---------- */
+  let frameTimes = [];
+  let freezeE = null;                          // 測試用：固定雪花動畫時間點
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    frameNo++;
+    if (mode !== 'card' && (frameNo & 1)) return;     // 設計模式 30fps 省電
+    const t0 = performance.now();
+    const t = now / 1000;
+    const dt = Math.min(0.05, Math.max(0.001, t - (lastT || t)));
+    lastT = t;
+    const k = dt * 60;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.drawImage(staticCv, 0, 0, W, H);
+    for (const s of twinkles) {
+      const a = 0.3 + 0.7 * Math.pow(0.5 + 0.5 * Math.sin(t * s.sp + s.ph), 2);
+      ctx.globalAlpha = a; ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+      if (a > 0.85) { ctx.globalAlpha = (a - 0.85) * 3; ctx.fillRect(s.x - s.r * 3, s.y - 0.35, s.r * 6, 0.7); ctx.fillRect(s.x - 0.35, s.y - s.r * 3, 0.7, s.r * 6); }
+    }
+    ctx.globalAlpha = 1;
+    drawSleigh(t, dt);
+    // 煙囪的煙（柔和、會擴散飄散）
+    smokeTimer -= dt;
+    if (smokeTimer <= 0 && smoke.length < 40) {
+      smokeTimer = 0.18;
+      smoke.push({ x: L.chimney.x + (Math.random() - 0.5) * L.cw * 0.05, y: L.chimney.y, r: L.cw * 0.06, life: 0, vx: 0.06 + Math.random() * 0.12, vy: -0.42 - Math.random() * 0.15, rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.01, seed: Math.random() * 10 });
+    }
+    for (let i = smoke.length - 1; i >= 0; i--) {
+      const p = smoke[i];
+      p.life += dt / 8;
+      if (p.life >= 1) { smoke.splice(i, 1); continue; }
+      p.x += (p.vx + p.life * 0.35 + Math.sin(t * 0.8 + p.seed) * 0.12) * k;
+      p.y += p.vy * (1 - p.life * 0.6) * k;
+      p.r += (0.05 + p.life * 0.12) * k * L.cw / 140;
+      p.rot += p.vr * k;
+      ctx.globalAlpha = 0.38 * Math.min(1, p.life * 5) * Math.pow(1 - p.life, 1.3);
+      const z = p.r * 2.6;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.drawImage(puffCv, -z / 2, -z / 2, z, z); ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+    // 地面積雪（緩慢增加）
+    acc = Math.min(L.maxAcc, acc + dt * L.maxAcc / 150);
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(0, H);
+    for (let x = 0; x <= W + 8; x += 8) ctx.lineTo(x, groundTop(x));
+    ctx.lineTo(W, H); ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(groundCv, 0, L.gTop, W, H - L.gTop);
+    // 窗光灑在雪地
+    const wy = groundTop(L.window.x);
+    ctx.translate(L.window.x - L.cw * 0.05, wy + L.cw * 0.1); ctx.scale(L.cw * 0.6, L.cw * 0.16);
+    const wl = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+    wl.addColorStop(0, 'rgba(255,190,105,0.45)'); wl.addColorStop(0.5, 'rgba(255,170,90,0.18)'); wl.addColorStop(1, 'rgba(255,170,90,0)');
+    ctx.fillStyle = wl; ctx.beginPath(); ctx.arc(0, 0, 1, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+    // 雪地閃光
+    ctx.globalCompositeOperation = 'lighter';
+    for (const s of sparkles) {
+      const a = Math.sin(t * s.sp + s.ph);
+      if (a > 0.88) { ctx.globalAlpha = (a - 0.88) / 0.12 * 0.9; const y = groundTop(s.x) + s.dy; ctx.drawImage(glintCv, s.x - s.s / 2, y - s.s / 2, s.s, s.s); }
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    // 飄雪
+    for (const p of snow) {
+      p.bx *= Math.pow(0.95, k); p.by *= Math.pow(0.95, k);
+      p.x += (Math.sin(t * p.f + p.ph) * 0.35 + 0.12 + p.bx) * k;
+      p.y += (p.vy + p.by) * k;
+      if (p.x < -10) p.x += W + 20; else if (p.x > W + 10) p.x -= W + 20;
+      if (p.y < -40) p.y = -40;
+      if (p.y > groundTop(p.x) + 2 + (p.r > 3.5 ? 40 : 0)) { const big = p.r > 3.5, a = p.a, r = p.r, vy = p.vy; Object.assign(p, newFlake(false)); if (big) { p.r = r; p.a = a; p.vy = vy; } acc = Math.min(L.maxAcc, acc + 0.004); }
+      const z = p.r * 2.6;
+      ctx.globalAlpha = p.a;
+      ctx.drawImage(dotCv, p.x - z / 2, p.y - z / 2, z, z);
+    }
+    ctx.globalAlpha = 1;
+    if (mode === 'card') drawCardFlake(t);
+    else { ctx.fillStyle = 'rgba(3,8,26,0.5)'; ctx.fillRect(0, 0, W, H); }
+    frameTimes.push(performance.now() - t0); if (frameTimes.length > 120) frameTimes.shift();
+  }
+  function sleighGeom() {
+    const sw = L.sw;
+    const pm = (L.moon.x + sw * 0.55) / (W + sw * 1.1);
+    return { sw, pm, PERIOD: 20, DUR: 7.5, first: 2.6 };
+  }
+  function drawSleigh(t, dt) {
+    const G = sleighGeom(), sw = G.sw, s = sw / 200;
+    let p;
+    if (mode !== 'card') p = G.pm;
+    else {
+      const e = t - sceneStart - G.first;
+      if (e < 0) p = -1; else { const c = e % G.PERIOD; p = c < G.DUR ? c / G.DUR : -1; }
+    }
+    if (p >= 0) {
+      const x = -sw * 0.55 + p * (W + sw * 1.1);
+      const y = L.moon.y + (L.moon.x - x) * 0.12 - Math.sin(p * Math.PI) * 6 + Math.sin(t * 3) * 1.5;
+      const fi = mode === 'card' ? Math.floor(t * GALLOP_HZ * SLEIGH_FRAMES) % SLEIGH_FRAMES : 2;
+      const spr = sleighFrames[fi], sprW = spr.width / dpr, sprH = spr.height / dpr;
+      ctx.save(); ctx.translate(x, y); ctx.rotate(-0.1);
+      ctx.drawImage(spr, -sprW / 2, -sprH / 2, sprW, sprH);
+      ctx.restore();
+      if (mode === 'card') {
+        dustTimer -= dt;
+        if (dustTimer <= 0 && dust.length < 40) { dustTimer = 0.05; dust.push({ x: x - sw * 0.46, y: y + 18 * s, life: 0, vx: -0.3 + Math.random() * 0.4, vy: 0.1 + Math.random() * 0.4, r: 1 + Math.random() * 1.4 }); }
+      }
+    }
+    for (let i = dust.length - 1; i >= 0; i--) {
+      const d = dust[i]; d.life += dt / 1.6; d.x += d.vx; d.y += d.vy;
+      if (d.life >= 1) { dust.splice(i, 1); continue; }
+      ctx.globalAlpha = (1 - d.life) * 0.9; const z = d.r * 3;
+      ctx.drawImage(dotCv, d.x - z / 2, d.y - z / 2, z, z);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function resize(force) {
+    const nw = window.innerWidth, nh = window.innerHeight, nd = Math.min(2, window.devicePixelRatio || 1);
+    if (!force && nw === W && nh === H && nd === dpr && staticCv) return;
+    W = nw; H = nh; dpr = nd;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    layout(); buildStatic(); buildGround(); buildSprites(); initParticles();
+    acc = Math.min(acc, L.maxAcc);
+    if (cardFlake) buildFlakeSprite();
+  }
+  function relayout() {                         // 標題實際尺寸改變時（顯示卡片後）重新定位雪花
+    const oldR = L.R;
+    flakeLayout();
+    if (cardFlake && Math.abs(oldR - L.R) > 0.5) buildFlakeSprite();
+  }
+  function start() { if (running) return; running = true; lastT = 0; raf = requestAnimationFrame(frame); }
+  function stop() { running = false; cancelAnimationFrame(raf); }
+  function init() {
+    resize(true);
+    let to = 0;
+    const onR = () => { clearTimeout(to); to = setTimeout(() => resize(false), 120); };
+    window.addEventListener('resize', onR);
+    window.addEventListener('orientationchange', () => setTimeout(() => resize(false), 300));
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
+    start();
+  }
+  function setMode(m) { mode = m; if (m === 'card') { sceneStart = performance.now() / 1000; dust = []; } }
+  function debug() {
+    const G = sleighGeom();
+    const ft = frameTimes.slice().sort((a, b) => a - b);
+    return { sleighFrames: sleighFrames.length, W, H, dpr, cx: L.cx, cy: L.cy, R: L.R, up: FLAKE_UP, down: FLAKE_DOWN, flakeTop: L.flakeTop, flakeBottom: L.flakeBottom, titleBottom: L.titleBottom,
+      groundY: L.groundY, cabinTop: L.cabinTop, cabinLeft: L.cabinX - L.cw * 0.12, moon: L.moon,
+      sleighMoonAt: G.first + G.pm * G.DUR, sinceCard: performance.now() / 1000 - sceneStart,
+      flakeStart: cardFlake ? cardFlake.start : null, now: performance.now() / 1000,
+      frameMedian: ft[ft.length >> 1], frameP95: ft[Math.floor(ft.length * 0.95)] };
+  }
+  return { init, setMode, setCard, blow, layout: L, relayout, titleBottom: null, debug, freezeFlake: (e) => { freezeE = e; }, sleighSheet: () => sleighFrames.map(f => f.toDataURL()), isRunning: () => running };
+})();
+
+/* =====================================================================
+ * 音樂盒 Jingle Bells（Web Audio 即時合成，旋律 1857 年公有領域）
+ * ===================================================================== */
+const Music = (function () {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  let ac = null, bus = null, timer = 0, loopStart = 0, idx = 0, state = 'idle';  // idle | playing | muted
+  const BEAT = 60 / 116;
+  const events = (function () {
+    const E5 = 76, F5 = 77, G5 = 79, C5 = 72, D5 = 74, C6 = 84;
+    const A = [[E5, 1], [E5, 1], [E5, 2], [E5, 1], [E5, 1], [E5, 2], [E5, 1], [G5, 1], [C5, 1.5], [D5, 0.5], [E5, 4]];
+    const B1 = [[F5, 1], [F5, 1], [F5, 1.5], [F5, 0.5], [F5, 1], [E5, 1], [E5, 1], [E5, 0.5], [E5, 0.5], [E5, 1], [D5, 1], [D5, 1], [E5, 1], [D5, 2], [G5, 2]];
+    const B2 = [[F5, 1], [F5, 1], [F5, 1], [F5, 1], [F5, 1], [E5, 1], [E5, 1], [E5, 0.5], [E5, 0.5], [G5, 1], [G5, 1], [F5, 1], [D5, 1], [C5, 4]];
+    const END = [[C5, 0.5], [E5, 0.5], [G5, 0.5], [C6, 0.5], [null, 2]];
+    const mel = A.concat(B1, A, B2, END);
+    const ev = []; let t = 0;
+    for (const [m, d] of mel) { if (m) ev.push({ t, m, v: 0.2, bass: false }); t += d; }
+    const total = t;   // 68 拍
+    const ch = ['C', 'C', 'C', 'C', 'F', 'C', 'G', 'G', 'C', 'C', 'C', 'C', 'F', 'C', 'G', 'C', 'C'];
+    const root = { C: [48, 55], F: [53, 48], G: [55, 50] };
+    ch.forEach((c, bar) => { ev.push({ t: bar * 4, m: root[c][0], v: 0.1, bass: true }); ev.push({ t: bar * 4 + 2, m: root[c][1], v: 0.07, bass: true }); });
+    ev.sort((a, b) => a.t - b.t);
+    ev.total = total;
+    return ev;
+  })();
+  const supported = !!AC;
+
+  function ensure() {
+    if (!AC) return null;
+    if (!ac) {
+      try {
+        ac = new AC();
+      } catch (e) { ac = null; }
+    }
+    return ac;
+  }
+  function unlock() {                          // iOS：在使用者手勢內播放無聲 buffer 並 resume
+    if (!ensure()) return;
+    try {
+      const b = ac.createBuffer(1, 1, 22050), s = ac.createBufferSource();
+      s.buffer = b; s.connect(ac.destination); s.start(0);
+    } catch (e) { /* ignore */ }
+    if (ac.state !== 'running' && state === 'playing') { try { const p = ac.resume(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* ignore */ } }
+  }
+  function newBus() {
+    if (bus) { try { bus.disconnect(); } catch (e) { /* ignore */ } }
+    const g = ac.createGain(); g.gain.value = 0.75;
+    let out = g;
+    if (ac.createDynamicsCompressor) { const comp = ac.createDynamicsCompressor(); g.connect(comp); out = comp; }
+    out.connect(ac.destination);
+    bus = g;
+  }
+  function note(e, t) {
+    const f = 440 * Math.pow(2, (e.m - 69) / 12);
+    const parts = e.bass ? [[1, 1, 1.4], [2, 0.15, 0.5]] : [[1, 1, 1.7], [2, 0.45, 0.8], [3, 0.12, 0.35], [5.4, 0.06, 0.12]];
+    for (const [mul, amp, dec] of parts) {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'sine'; o.frequency.value = f * mul;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(e.v * amp, t + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dec);
+      o.connect(g); g.connect(bus);
+      o.start(t); o.stop(t + dec + 0.05);
+    }
+  }
+  function tick() {
+    if (!ac || state !== 'playing') return;
+    const now = ac.currentTime, ahead = now + 0.3;
+    let guard = 0;
+    while (guard++ < 2000) {
+      const e = events[idx], when = loopStart + e.t * BEAT;
+      if (when > ahead) break;
+      if (when >= now - 0.03) { try { note(e, Math.max(when, now)); } catch (err) { /* ignore */ } }
+      idx++;
+      if (idx >= events.length) { idx = 0; loopStart += events.total * BEAT; }
+    }
+  }
+  function start() {
+    if (!ensure()) { ui(); return false; }
+    unlock();
+    try { const p = ac.resume(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* ignore */ }
+    if (state === 'playing') return true;
+    try { newBus(); } catch (e) { return false; }
+    state = 'playing';
+    loopStart = ac.currentTime + 0.12; idx = 0;
+    tick(); clearInterval(timer); timer = setInterval(tick, 70);
+    ui();
+    return true;
+  }
+  function mute() {
+    if (state !== 'playing') return;
+    state = 'muted'; clearInterval(timer);
+    try { bus.gain.setTargetAtTime(0, ac.currentTime, 0.03); } catch (e) { /* ignore */ }
+    setTimeout(() => { if (state === 'muted' && ac) { try { ac.suspend(); } catch (e) { /* ignore */ } } }, 150);
+    ui();
+  }
+  function unmute() {
+    if (state !== 'muted' || !ac) return;
+    state = 'idle';
+    start();
+  }
+  function stop() {                            // 離開卡片（回到編輯）
+    clearInterval(timer);
+    if (bus) { try { bus.disconnect(); } catch (e) { /* ignore */ } bus = null; }
+    if (ac) { try { ac.suspend(); } catch (e) { /* ignore */ } }
+    state = 'idle'; ui();
+  }
+  function onHidden(hidden) {
+    if (!ac || state !== 'playing') return;
+    try {
+      if (hidden) ac.suspend();
+      else { const p = ac.resume(); if (p && p.catch) p.catch(() => {}); }
+    } catch (e) { /* ignore */ }
+  }
+  let uiCb = null;
+  function ui() { if (uiCb) uiCb(state, supported); }
+  return { start, mute, unmute, stop, unlock, onHidden, get state() { return state; }, supported, onUi(cb) { uiCb = cb; ui(); },
+    get ctxState() { return ac ? ac.state : 'none'; } };
+})();
+
+/* =====================================================================
+ * App
+ * ===================================================================== */
+(function App() {
+  const $ = (id) => document.getElementById(id);
+  const body = document.body;
+  const toastEl = $('toast');
+  let toastT = 0;
+  function toast(msg, ms) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('show'), ms || 2600); }
+  const SHARE_TEXT = '我親手做了一片聖誕雪花送給你，點開看看！';
+
+  function baseUrl() { return location.href.split('#')[0].split('?')[0]; }
+  function readParams() {
+    let c = null, s = null;
+    const h = location.hash.replace(/^#/, '');
+    if (h) { const p = new URLSearchParams(h); c = p.get('c'); s = p.get('s'); }
+    if (!c && !s && location.search) { const p = new URLSearchParams(location.search); c = p.get('c'); s = p.get('s'); }
+    return { c: c && c.trim(), s: s && s.trim() };
+  }
+
+  /* 標題下緣（雪花必須在它下面）。卡片顯示時直接量 DOM，否則依 CSS 公式估算 */
+  Scene.titleBottom = (W, H) => {
+    const el = $('xmasTitle');
+    if (!$('card').hidden && el.offsetHeight) return el.offsetTop + el.offsetHeight;
+    const fs = Math.max(30, Math.min(62, W * 0.096, H * 0.11));
+    return H * 0.016 + fs * 1.25 + 2;
+  };
+
+  /* ---------------- 卡片模式 ---------------- */
+  let cardActive = false, preview = false, skipToggleOnce = false, hintT = 0, textTimers = [];
+  const soundBtn = $('sound');
+  Music.onUi((st, sup) => {
+    soundBtn.classList.remove('idle', 'playing', 'muted');
+    if (!sup) { soundBtn.classList.add('muted'); soundBtn.setAttribute('aria-label', '此瀏覽器不支援音樂'); soundBtn.disabled = true; return; }
+    soundBtn.classList.add(st);
+    soundBtn.setAttribute('aria-label', st === 'playing' ? '音樂播放中，點一下靜音' : st === 'muted' ? '已靜音，點一下播放音樂' : '播放音樂');
+    soundBtn.setAttribute('aria-pressed', st === 'playing' ? 'true' : 'false');
+  });
+
+  function showCard(card, isPreview) {
+    preview = !!isPreview;
+    cardActive = true;
+    $('designer').hidden = true; $('sheet').hidden = true; $('errorBox').hidden = true; $('loadingBox').hidden = true;
+    body.classList.remove('mode-designer'); body.classList.add('mode-card');
+    window.scrollTo(0, 0);
+    $('card').hidden = false;
+    $('makeOwn').href = baseUrl();
+    $('makeOwn').hidden = preview;
+    $('backEdit').hidden = !preview;
+    Scene.relayout();
+    Scene.setCard(card);
+    Scene.setMode('card');
+    textTimers.forEach(clearTimeout); textTimers = [];
+    ['xmasTitle', 'tapHint'].forEach(id => $(id).classList.remove('show'));
+    textTimers.push(setTimeout(() => $('xmasTitle').classList.add('show'), 400));
+    textTimers.push(setTimeout(() => { if (Music.state === 'idle') $('tapHint').classList.add('show'); }, 2200));
+    clearTimeout(hintT); hintT = setTimeout(() => $('tapHint').classList.remove('show'), 11000);
+  }
+  function leaveCard() {
+    cardActive = false;
+    Music.stop();
+    $('card').hidden = true;
+    body.classList.remove('mode-card'); body.classList.add('mode-designer');
+    Scene.setMode('designer');
+  }
+
+  // 第一次觸控開始播放音樂（瀏覽器禁止自動播放）
+  function firstGesture(ev) {
+    if (!cardActive) return;
+    if (Music.state === 'idle') {
+      if (Music.start() && ev.target && ev.target.closest && ev.target.closest('#sound')) skipToggleOnce = true;
+      $('tapHint').classList.remove('show');
+    } else if (Music.state === 'playing') {
+      Music.unlock();                          // iOS 可能要 touchend 才真正解鎖
+    }
+  }
+  ['pointerdown', 'touchend', 'click', 'keydown'].forEach(t => document.addEventListener(t, firstGesture, true));
+  soundBtn.addEventListener('click', () => {
+    if (skipToggleOnce) { skipToggleOnce = false; return; }
+    if (Music.state === 'playing') Music.mute();
+    else if (Music.state === 'muted') Music.unmute();
+    else Music.start();
+  });
+  document.addEventListener('visibilitychange', () => Music.onHidden(document.hidden));
+
+  // 滑動吹雪
+  const ptr = {};
+  window.addEventListener('pointermove', (e) => {
+    if (!cardActive) return;
+    const last = ptr[e.pointerId];
+    if (last) Scene.blow(e.clientX, e.clientY, e.clientX - last.x, e.clientY - last.y);
+    ptr[e.pointerId] = { x: e.clientX, y: e.clientY };
+  }, { passive: true });
+  const clearPtr = (e) => { delete ptr[e.pointerId]; };
+  window.addEventListener('pointerup', clearPtr); window.addEventListener('pointercancel', clearPtr);
+  if (!window.PointerEvent) {
+    let lt = null;
+    window.addEventListener('touchmove', (e) => { if (!cardActive) return; const t = e.touches[0]; if (lt) Scene.blow(t.clientX, t.clientY, t.clientX - lt.x, t.clientY - lt.y); lt = { x: t.clientX, y: t.clientY }; }, { passive: true });
+    window.addEventListener('touchend', () => { lt = null; });
+  }
+  document.addEventListener('touchmove', (e) => { if (cardActive && !(e.target.closest && e.target.closest('.sheet'))) e.preventDefault(); }, { passive: false });
+
+  $('backEdit').addEventListener('click', () => { leaveCard(); showDesigner(); });
+
+  function showError(text) {
+    $('designer').hidden = true; $('card').hidden = true; $('loadingBox').hidden = true;
+    body.classList.remove('mode-designer'); body.classList.add('mode-card');
+    Scene.setMode('designer');
+    if (text) $('errorText').textContent = text;
+    $('errorMake').href = baseUrl();
+    $('errorBox').hidden = false;
+  }
+
+  /* ---------------- 設計模式 ---------------- */
+  const D = { strokes: [], beautify: false, width: 1, history: [] };
+  const pad = $('pad'), pctx = pad.getContext('2d');
+  let padSize = 0, padDpr = 1, PR = 0, committed = null, live = null, liveSm = null, activeId = null, padRect = null, drawQueued = false;
+  let liveLines = null, liveElem = null, ghost = null;      // 手繪引導：目前的既有線條、對齊後的預覽、淡出中的筆跡
+  let designerReady = false;
+
+  function snapshot() { return JSON.stringify({ s: D.strokes.map(s => s.t ? Object.assign({}, s) : ({ w: s.w, m: s.m, exact: !!s.exact, dense: s.dense, q: s.q })), b: D.beautify }); }
+  function pushHistory() { D.history.push(snapshot()); if (D.history.length > 40) D.history.shift(); }
+  function restore(snap) { const o = JSON.parse(snap); D.strokes = o.s; D.beautify = o.b; }
+
+  function padResize() {
+    const r = pad.getBoundingClientRect();
+    if (!r.width) return;
+    padSize = r.width; padDpr = Math.min(2, window.devicePixelRatio || 1);
+    pad.width = Math.round(padSize * padDpr); pad.height = Math.round(padSize * padDpr);
+    PR = padSize / 2 * 0.93;
+    renderCommitted();
+  }
+  function renderCommitted() {
+    if (!padSize) return;
+    if (!committed) committed = document.createElement('canvas');
+    committed.width = pad.width; committed.height = pad.height;
+    const c = committed.getContext('2d');
+    c.setTransform(padDpr, 0, 0, padDpr, padSize / 2 * padDpr, padSize / 2 * padDpr);
+    const bg = c.createRadialGradient(0, 0, PR * 0.1, 0, 0, PR * 1.06);
+    bg.addColorStop(0, 'rgba(36,70,140,0.55)'); bg.addColorStop(1, 'rgba(12,28,70,0.7)');
+    c.fillStyle = bg; c.beginPath(); c.arc(0, 0, PR * 1.06, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = 'rgba(255,255,255,0.28)'; c.lineWidth = 1.2; c.stroke();
+    c.strokeStyle = 'rgba(255,255,255,0.09)'; c.lineWidth = 1;
+    if (c.setLineDash) c.setLineDash([3, 5]);
+    c.beginPath();
+    for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; c.moveTo(0, 0); c.lineTo(Math.cos(a) * PR, Math.sin(a) * PR); }
+    c.stroke();
+    c.beginPath(); c.arc(0, 0, PR * 0.5, 0, Math.PI * 2); c.stroke();
+    if (c.setLineDash) c.setLineDash([]);
+    const fl = Core.toFloat(D.strokes, Core.VERSION);
+    if (fl.length) {
+      const geo = Core.decorate(fl, D.beautify, Core.VERSION);
+      if (D.beautify) {
+        c.save(); c.strokeStyle = 'rgba(160,205,255,0.9)'; c.shadowColor = 'rgba(120,180,255,1)'; c.shadowBlur = PR * 0.1 * padDpr;
+        drawFlakeLines(c, geo.lines, PR, 1.6); c.restore();
+      }
+      c.strokeStyle = iceGradient(c, PR);
+      drawFlakeLines(c, geo.lines, PR, 1);
+    }
+    paintPad();
+    updateDesignerUi();
+  }
+  function paintPad() {
+    drawQueued = false;
+    pctx.setTransform(1, 0, 0, 1, 0, 0);
+    pctx.clearRect(0, 0, pad.width, pad.height);
+    if (committed) pctx.drawImage(committed, 0, 0);
+    pctx.setTransform(padDpr, 0, 0, padDpr, padSize / 2 * padDpr, padSize / 2 * padDpr);
+    const g = live || (ghost && ghost.pts);
+    if (g && g.length > 1) {                                  // 淡淡的手指筆跡（只畫一份）
+      const fade = live ? 1 : Math.max(0, 1 - (performance.now() - ghost.t0) / 450);
+      pctx.save(); pctx.globalAlpha = 0.38 * fade; pctx.strokeStyle = '#9dbcff'; pctx.lineWidth = 7; pctx.lineCap = pctx.lineJoin = 'round';
+      pctx.beginPath(); g.forEach((p, i) => i ? pctx.lineTo(p[0] * PR, p[1] * PR) : pctx.moveTo(p[0] * PR, p[1] * PR)); pctx.stroke();
+      pctx.restore();
+      if (!live && fade > 0) queuePaint(); else if (!live) ghost = null;
+    }
+    if (live && liveElem) {                                   // 對齊後的直線預覽（6 個方向）
+      pctx.save(); pctx.strokeStyle = 'rgba(255,224,150,0.95)'; pctx.shadowColor = 'rgba(255,210,120,0.8)'; pctx.shadowBlur = 6 * padDpr;
+      drawFlakeLines(pctx, [Core.elemLine(liveElem)], PR, 1.15);
+      pctx.restore();
+    }
+  }
+  function queuePaint() { if (!drawQueued) { drawQueued = true; requestAnimationFrame(paintPad); } }
+  function toNorm(x, y) { const p = [(x - padRect.left - padRect.width / 2) / PR, (y - padRect.top - padRect.height / 2) / PR]; const r = Math.hypot(p[0], p[1]); return r > 1 ? [p[0] / r, p[1] / r] : p; }
+  function addPoint(x, y) {
+    const p = toNorm(x, y);
+    liveSm = [liveSm[0] + (p[0] - liveSm[0]) * 0.55, liveSm[1] + (p[1] - liveSm[1]) * 0.55];
+    const l = live[live.length - 1];
+    if (Math.hypot(liveSm[0] - l[0], liveSm[1] - l[1]) > 0.004) { live.push(liveSm.slice()); liveElem = Core.interpret(live, liveLines, D.width); }
+  }
+  function beginStroke(x, y) {
+    if (D.strokes.length >= Core.MAX_STROKES) { toast('筆畫已達上限，可以按「復原」或「清除」再畫'); return false; }
+    padRect = pad.getBoundingClientRect();
+    if (!PR) padResize();
+    const p = toNorm(x, y); live = [p]; liveSm = p.slice();
+    liveLines = Core.toFloat(D.strokes, Core.VERSION); liveElem = null; ghost = null;
+    $('padHint').style.opacity = '0';
+    queuePaint();
+    return true;
+  }
+  function endStroke() {
+    if (!live) return;
+    const raw = live; live = null;
+    const el = Core.interpret(raw, liveLines || Core.toFloat(D.strokes, Core.VERSION), D.width);
+    liveElem = null; ghost = { pts: raw, t0: performance.now() };
+    if (el) {
+      delete el.rule;
+      pushHistory();
+      D.strokes.push(el);
+      Core.fitStrokes(D.strokes, CONFIG.pointBudget);
+      saveDraft();
+    } else if (raw.length > 3) {
+      const L = Math.hypot(raw[raw.length - 1][0] - raw[0][0], raw[raw.length - 1][1] - raw[0][1]);
+      if (L >= Core.MIN_LEN) toast('從中心往外、或從枝條上往外畫，會比較容易對齊', 2000);
+    }
+    renderCommitted();
+  }
+  if (window.PointerEvent) {
+    pad.addEventListener('pointerdown', (e) => {
+      if (activeId !== null || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      e.preventDefault();
+      if (!beginStroke(e.clientX, e.clientY)) return;
+      activeId = e.pointerId;
+      try { pad.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+    });
+    pad.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== activeId || !live) return;
+      const list = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+      if (list && list.length) for (const ev of list) addPoint(ev.clientX, ev.clientY); else addPoint(e.clientX, e.clientY);
+      queuePaint();
+    });
+    const up = (e) => { if (e.pointerId !== activeId) return; activeId = null; if (e.type !== 'pointercancel' || (live && live.length > 2)) endStroke(); else { live = null; renderCommitted(); } };
+    pad.addEventListener('pointerup', up); pad.addEventListener('pointercancel', up);
+  } else {
+    pad.addEventListener('touchstart', (e) => { e.preventDefault(); if (live) return; const t = e.changedTouches[0]; activeId = t.identifier; beginStroke(t.clientX, t.clientY); }, { passive: false });
+    pad.addEventListener('touchmove', (e) => { e.preventDefault(); for (const t of e.changedTouches) if (t.identifier === activeId && live) addPoint(t.clientX, t.clientY); queuePaint(); }, { passive: false });
+    pad.addEventListener('touchend', (e) => { e.preventDefault(); activeId = null; endStroke(); }, { passive: false });
+    let md = false;
+    pad.addEventListener('mousedown', (e) => { md = beginStroke(e.clientX, e.clientY); });
+    window.addEventListener('mousemove', (e) => { if (md && live) { addPoint(e.clientX, e.clientY); queuePaint(); } });
+    window.addEventListener('mouseup', () => { if (md) { md = false; endStroke(); } });
+  }
+
+  function updateDesignerUi() {
+    $('btnUndo').disabled = D.history.length === 0;
+    $('btnClear').disabled = D.strokes.length === 0;
+    $('btnBeautify').setAttribute('aria-pressed', D.beautify ? 'true' : 'false');
+    $('beautifyLabel').textContent = D.beautify ? '已美化' : '一鍵美化';
+    $('padHint').style.opacity = D.strokes.length || live ? '0' : '1';
+  }
+  $('btnRandom').addEventListener('click', () => {
+    pushHistory();
+    D.strokes = Core.randomFlake();
+    renderCommitted(); saveDraft();
+    toast('生成好了！可以繼續加筆畫或按「一鍵美化」', 2200);
+  });
+  $('btnBeautify').addEventListener('click', () => {
+    pushHistory(); D.beautify = !D.beautify; renderCommitted(); saveDraft();
+    toast(D.beautify ? '已加上光暈與細小側枝' : '已取消美化', 1600);
+  });
+  $('btnUndo').addEventListener('click', () => { if (!D.history.length) return; restore(D.history.pop()); renderCommitted(); saveDraft(); });
+  $('btnClear').addEventListener('click', () => { if (!D.strokes.length) return; pushHistory(); D.strokes = []; renderCommitted(); saveDraft(); toast('已清除，按「復原」可以找回', 1800); });
+  $('thick').addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-w]'); if (!b) return;
+    D.width = +b.dataset.w;
+    for (const x of $('thick').querySelectorAll('button')) x.setAttribute('aria-checked', x === b ? 'true' : 'false');
+  });
+
+  function currentCard() { return { strokes: D.strokes.map(s => s.t ? { t: s.t, w: s.w, x: s.x, y: s.y, d: s.d, l: s.l, r: s.r } : { w: s.w, m: s.m, q: s.q }), beautify: D.beautify }; }
+  function validate() {
+    if (!D.strokes.length) { toast('請先畫一片雪花，或按「隨機生成」'); pad.scrollIntoView({ behavior: 'smooth', block: 'center' }); return null; }
+    return currentCard();
+  }
+  let designerScroll = 0;
+  $('btnPreview').addEventListener('click', () => {
+    const c = validate(); if (!c) return;
+    let card;
+    try { card = Core.decode(Core.encode(c)); } catch (e) { toast('預覽失敗，請再試一次'); return; }
+    designerScroll = window.scrollY;
+    showCard(card, true);
+  });
+
+  let currentLink = '';
+  $('btnMake').addEventListener('click', async () => {
+    const c = validate(); if (!c) return;
+    let payload;
+    try { payload = Core.encode(c); Core.decode(payload); } catch (e) { toast('產生連結失敗，請簡化雪花後再試'); return; }
+    let link = baseUrl() + '#c=' + payload;
+    if (CONFIG.storage && typeof CONFIG.storage.saveCard === 'function') {
+      $('btnMake').disabled = true;
+      try {
+        const code = await CONFIG.storage.saveCard(payload);
+        if (typeof code === 'string' && /^[A-Za-z0-9_-]{1,64}$/.test(code)) link = baseUrl() + '#s=' + code;
+      } catch (e) { toast('短網址服務暫時無法使用，改用一般連結', 2400); }
+      $('btnMake').disabled = false;
+    }
+    currentLink = link;
+    $('linkOut').value = link;
+    $('linkMeta').textContent = '連結長度 ' + link.length + ' 字元（資料部分 ' + (link.length - baseUrl().length) + ' 字元）';
+    $('btnLine').href = 'https://line.me/R/share?text=' + encodeURIComponent(SHARE_TEXT + '\n' + link);
+    $('btnShare').hidden = !navigator.share;
+    $('sheet').hidden = false;
+    setTimeout(() => (navigator.share ? $('btnShare') : $('btnCopy')).focus(), 50);
+  });
+  $('btnShare').addEventListener('click', async () => {
+    try { await navigator.share({ title: '送你一片聖誕雪花', text: SHARE_TEXT, url: currentLink }); }
+    catch (e) { if (e && e.name !== 'AbortError') toast('無法開啟分享，請改用「複製連結」'); }
+  });
+  $('btnCopy').addEventListener('click', async () => {
+    const ok = await copyText(currentLink);
+    if (ok) toast('已複製連結，貼到 LINE 傳給對方吧！');
+    else { const i = $('linkOut'); i.focus(); i.select(); try { i.setSelectionRange(0, i.value.length); } catch (e) { /* ignore */ } toast('請長按上方連結，手動複製', 3200); }
+  });
+  $('linkOut').addEventListener('focus', (e) => e.target.select());
+  $('btnCloseSheet').addEventListener('click', () => { $('sheet').hidden = true; });
+  $('sheet').addEventListener('click', (e) => { if (e.target === $('sheet')) $('sheet').hidden = true; });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('sheet').hidden) $('sheet').hidden = true; });
+
+  async function copyText(t) {
+    try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(t); return true; } } catch (e) { /* fallback */ }
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '0'; ta.style.opacity = '0'; ta.style.fontSize = '16px';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select(); ta.setSelectionRange(0, t.length);
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  // 草稿保存（離開再回來不會不見）
+  let saveT = 0;
+  function saveDraft() {
+    clearTimeout(saveT);
+    saveT = setTimeout(() => {
+      if (!D.strokes.length) { try { localStorage.removeItem(CONFIG.draftKey); } catch (e) { /* ignore */ } return; }
+      try { localStorage.setItem(CONFIG.draftKey, JSON.stringify({ v: Core.VERSION, c: Core.encode(currentCard()) })); } catch (e) { /* 無痕或 in-app 可能禁止 */ }
+    }, 300);
+  }
+  function loadDraft() {
+    try {
+      const o = JSON.parse(localStorage.getItem(CONFIG.draftKey) || 'null');
+      if (!o || o.v !== Core.VERSION || !o.c) return;
+      const d = Core.decode(o.c);
+      D.strokes = d.strokes.map(s => s.t ? s : Object.assign(s, { exact: true, dense: s.q.map(q => Core.dequant(q, s.m)) }));
+      D.beautify = d.beautify;
+    } catch (e) { /* ignore */ }
+  }
+
+  function showDesigner() {
+    $('errorBox').hidden = true; $('loadingBox').hidden = true; $('card').hidden = true;
+    body.classList.remove('mode-card'); body.classList.add('mode-designer');
+    Scene.setMode('designer');
+    $('designer').hidden = false;
+    if (!designerReady) {
+      designerReady = true;
+      loadDraft();
+      let rt = 0;
+      window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(padResize, 120); });
+    }
+    padResize();
+    window.scrollTo(0, designerScroll || 0);
+  }
+  window.addEventListener('resize', () => { if (cardActive) setTimeout(() => Scene.relayout(), 200); });
+
+  /* ---------------- 啟動 ---------------- */
+  function boot() {
+    Scene.init();
+    const p = readParams();
+    if (p.c) {
+      let card = null;
+      try { card = Core.decode(p.c); } catch (e) { card = null; }
+      if (card) showCard(card, false); else showError();
+    } else if (p.s) {
+      if (CONFIG.storage && typeof CONFIG.storage.loadCard === 'function' && /^[A-Za-z0-9_-]{1,64}$/.test(p.s)) {
+        $('loadingBox').hidden = false;
+        body.classList.add('mode-card'); body.classList.remove('mode-designer');
+        Promise.resolve().then(() => CONFIG.storage.loadCard(p.s)).then((payload) => showCard(Core.decode(payload), false))
+          .catch(() => showError('找不到這張卡片，可能連結有誤或網路不穩，請稍後再試。'));
+      } else showError('這個短網址目前無法讀取，請向寄件人索取完整連結。');
+    } else showDesigner();
+    window.addEventListener('hashchange', () => location.reload());
+    window.__snowflake = { Core, Music, Scene, D, getLink: () => currentLink };   // 測試用
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
