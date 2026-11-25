@@ -2,7 +2,7 @@
 <html lang="zh-Hant-TW">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050d26">
 <meta name="format-detection" content="telephone=no">
 <title>聖誕雪花賀卡</title>
@@ -16,7 +16,7 @@
 html,body{margin:0;min-height:100%;background:#050d26;color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Heiti TC","Noto Sans TC","Noto Sans CJK TC","Microsoft JhengHei",sans-serif;
   -webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{overscroll-behavior-y:none}
+html,body{touch-action:manipulation}button,a,input,label,select,textarea{touch-action:manipulation}body{overscroll-behavior-y:none}
 body.mode-card{overflow:hidden;position:fixed;left:0;top:0;width:100%;height:100%;touch-action:none}
 [hidden]{display:none!important}
 button{font:inherit;cursor:pointer}
@@ -2674,6 +2674,22 @@ const Music = (function () {
   }
   boot();
 })();
+</script>
+<script>
+  // Block double-tap zoom and pinch zoom (iOS Safari ignores user-scalable=no).
+  (function noZoom() {
+    let lastEnd = 0;
+    document.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      const t = e.target;
+      const interactive = t && t.closest && t.closest('input,textarea,select,button,a,label');
+      if (!interactive && now - lastEnd < 350 && e.cancelable) e.preventDefault();
+      lastEnd = now;
+    }, { passive: false });
+    document.addEventListener('dblclick', (e) => { e.preventDefault(); }, { passive: false });
+    ['gesturestart', 'gesturechange', 'gestureend'].forEach((t) => document.addEventListener(t, (e) => e.preventDefault(), { passive: false }));
+    document.addEventListener('touchmove', (e) => { if (e.touches && e.touches.length > 1 && e.cancelable) e.preventDefault(); }, { passive: false });
+  })();
 </script>
 </body>
 </html>
